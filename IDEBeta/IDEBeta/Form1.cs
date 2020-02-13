@@ -21,5 +21,23 @@ namespace IDEBeta
         {
 
         }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ImageList imageList = new ImageList();
+            //imageList.ImageSize.Width = 16;
+            //button1.Width = 16;
+            //button1.Height = 16;
+        }
+
+        private void debuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
