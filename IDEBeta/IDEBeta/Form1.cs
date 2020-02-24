@@ -12,7 +12,9 @@ namespace IDEBeta
 {
     public partial class Form1 : Form
     {
+        /*Variables globales para control de texto*/
         string nombreArchivo;
+        int lineas = 0;
         public Form1()
         {
             InitializeComponent();
@@ -22,6 +24,7 @@ namespace IDEBeta
         {
             //this.TopMost = true;
             this.WindowState = FormWindowState.Maximized;
+            label1.Text = "1\n2\n3\n";
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -75,7 +78,7 @@ namespace IDEBeta
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
             string r;
-            var a  = openFileDialog1.FileName;
+            openFileDialog1.ShowDialog();
             using (System.IO.StreamReader file = new System.IO.StreamReader(openFileDialog1.FileName))
             {
                 r = file.ReadLine();
@@ -93,13 +96,15 @@ namespace IDEBeta
         {
             saveFileDialog1.FileName = "Sin titulo.txt";
             var sf = saveFileDialog1.ShowDialog();
+            saveFileDialog1.AddExtension = true;
             if (sf == DialogResult.OK)
             {
-                using (var file = new System.IO.StreamWriter(saveFileDialog1.FileName))
+                using (var saveFile = new System.IO.StreamWriter(saveFileDialog1.FileName + ".txt"))
                 {
-                    file.WriteLine(richTextBox1.Text);
+                    saveFile.WriteLine(richTextBox1.Text);
                 }
             }
+            nombreArchivo = saveFileDialog1.FileName;
         }
 
         private void closeToolStripMenuItem_Click(object sender, EventArgs e)
@@ -113,6 +118,25 @@ namespace IDEBeta
             {
                 saveAsToolStripMenuItem_Click(sender, e);
             }
+            using (var saveFile = new System.IO.StreamWriter(nombreArchivo + ".txt"))
+                saveFile.WriteLine(richTextBox1.Text);
+        }
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+            if(richTextBox1.Lines.Length != lineas)
+            {
+                string nueva = "\n";
+                for(int i = 1;i<richTextBox1.Lines.Length; i++)
+                {
+                    nueva += (i.ToString() + "\n");
+                    
+                }
+                Console.WriteLine(nueva);
+                label1.Text = nueva.ToString();
+                lineas = richTextBox1.Lines.Length;
+            }
+            label1.Text = richTextBox1.Lines.Length.ToString();
         }
     }
 }
