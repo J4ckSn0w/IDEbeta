@@ -49,7 +49,6 @@
             this.toolStripMenuItem6 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem7 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripMenuItem();
-            this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.menuStrip3 = new System.Windows.Forms.MenuStrip();
@@ -69,6 +68,8 @@
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.richTextBox4 = new System.Windows.Forms.RichTextBox();
+            this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
@@ -274,16 +275,6 @@
             this.toolStripMenuItem2.Size = new System.Drawing.Size(68, 26);
             this.toolStripMenuItem2.Text = "Compilar";
             // 
-            // label1
-            // 
-            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.label1.Location = new System.Drawing.Point(3, 3);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(45, 506);
-            this.label1.TabIndex = 8;
-            this.label1.UseCompatibleTextRendering = true;
-            this.label1.Click += new System.EventHandler(this.label1_Click);
-            // 
             // label2
             // 
             this.label2.AutoSize = true;
@@ -299,7 +290,8 @@
             // 
             // splitContainer1.Panel1
             // 
-            this.splitContainer1.Panel1.Controls.Add(this.label1);
+            this.splitContainer1.Panel1.AutoScroll = true;
+            this.splitContainer1.Panel1.Controls.Add(this.richTextBox4);
             this.splitContainer1.Panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.splitContainer1_Panel1_Paint);
             // 
             // splitContainer1.Panel2
@@ -428,6 +420,21 @@
             // 
             this.openFileDialog1.FileName = "openFileDialog1";
             // 
+            // richTextBox4
+            // 
+            this.richTextBox4.Location = new System.Drawing.Point(3, 3);
+            this.richTextBox4.Name = "richTextBox4";
+            this.richTextBox4.ReadOnly = true;
+            this.richTextBox4.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.None;
+            this.richTextBox4.Size = new System.Drawing.Size(45, 506);
+            this.richTextBox4.TabIndex = 0;
+            this.richTextBox4.Text = "";
+            this.richTextBox4.TextChanged += new System.EventHandler(this.richTextBox4_TextChanged);
+            // 
+            // timer1
+            // 
+            this.timer1.Tick += new System.EventHandler(this.timer1_Tick_1);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -489,7 +496,6 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem6;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem7;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.SplitContainer splitContainer1;
         private System.Windows.Forms.MenuStrip menuStrip3;
@@ -509,6 +515,8 @@
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
+        private System.Windows.Forms.RichTextBox richTextBox4;
+        private System.Windows.Forms.Timer timer1;
     }
 }
 

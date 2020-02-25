@@ -4,9 +4,12 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Timer = System.Windows.Forms.Timer;
 
 namespace IDEBeta
 {
@@ -15,16 +18,90 @@ namespace IDEBeta
         /*Variables globales para control de texto*/
         string nombreArchivo;
         int lineas = 0;
+
+        int currentLine = 0;
+        int currentCol = 0;
+        /*Probando cosas para scroll*/
+        public enum ScrollBarType : uint
+        {
+            SbHorz = 0,
+            SbVert = 1,
+            SbCtl = 2,
+            SbBoth = 3
+        }
+
+        public enum Message : uint
+        {
+            WM_VSCROLL = 0x0115
+        }
+
+        public enum ScrollBarCommands : uint
+        {
+            SB_THUMBPOSITION = 4
+        }
         public Form1()
         {
             InitializeComponent();
+            richTextBox4.AutoScrollOffset = new Point(0, 0);
+            this.Resize += new System.EventHandler(this.ReadOnlyRichTextBox_Resize);
+            timer1.Start();
+
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.ReadOnlyRichTextBox_Mouse);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ReadOnlyRichTextBox_Mouse);
+            base.TabStop = false;
+            HideCaret(this.Handle);
+        }
+        [DllImport("User32.dll")]
+        public extern static int GetScrollPos(IntPtr hWnd, int nBar);
+
+        [DllImport("User32.dll")]
+        public extern static int SendMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
+
+        [DllImport("user32.dll")]
+        private static extern int HideCaret(IntPtr hwnd);
+
+        protected override void OnGotFocus(EventArgs e)
+        {
+            HideCaret(this.Handle);
         }
 
+        protected override void OnEnter(EventArgs e)
+        {
+            HideCaret(this.Handle);
+        }
+
+        [DefaultValue(true)]
+        public new bool ReadOnly
+        {
+            get { return true; }
+            set { }
+        }
+
+        [DefaultValue(false)]
+        public new bool TabStop
+        {
+            get { return false; }
+            set { }
+        }
+
+        private void ReadOnlyRichTextBox_Mouse(object sender, System.Windows.Forms.MouseEventArgs e)
+        {
+            HideCaret(this.Handle);
+        }
+
+        private void ReadOnlyRichTextBox_Resize(object sender, System.EventArgs e)
+        {
+            HideCaret(this.Handle);
+
+        }
+
+        /*Fin de probando cosas*/
         private void Form1_Load(object sender, EventArgs e)
         {
             //this.TopMost = true;
             this.WindowState = FormWindowState.Maximized;
-            label1.Text = "1\n2\n3\n";
+            /*Thread thread2 = new Thread(new ThreadStart(scroll));
+            thread2.Start();*/
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -67,7 +144,10 @@ namespace IDEBeta
 
         private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
         {
-
+            int nPos = GetScrollPos(richTextBox1.Handle, (int)ScrollBarType.SbVert);
+            nPos <<= 16;
+            uint wParam = (uint)ScrollBarCommands.SB_THUMBPOSITION | (uint)nPos;
+            SendMessage(richTextBox2.Handle, (int)Message.WM_VSCROLL, new IntPtr(wParam), new IntPtr(0));
         }
 
         private void menuStrip3_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -124,7 +204,10 @@ namespace IDEBeta
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
-           if(richTextBox1.Lines.Length + 1 != lineas)
+            int nPos = GetScrollPos(richTextBox1.Handle, (int)ScrollBarType.SbVert);
+            nPos <<= 16;
+            uint wParam = (uint)ScrollBarCommands.SB_THUMBPOSITION | (uint)nPos;
+            if (richTextBox1.Lines.Length + 1 != lineas)
             {
                 string nueva = "1\n";
                 for(int i = 2;i<richTextBox1.Lines.Length+1; i++)
@@ -132,10 +215,58 @@ namespace IDEBeta
                     nueva += (i.ToString() + "\n");
                     
                 }
-                Console.WriteLine(nueva);
-                label1.Text = nueva.ToString();
+                richTextBox4.Text = nueva.ToString();
                 lineas = richTextBox1.Lines.Length;
+                /*Probando cosas*/
+                
+                SendMessage(richTextBox4.Handle, (int)Message.WM_VSCROLL, new IntPtr(wParam), new IntPtr(0));
+                /*Probando cosas*/
             }
+            SendMessage(richTextBox2.Handle, (int)Message.WM_VSCROLL, new IntPtr(wParam), new IntPtr(0));
+            if(string.Equals(this.VScroll.ToString(),"True"))
+            {
+                SendMessage(richTextBox2.Handle, (int)Message.WM_VSCROLL, new IntPtr(wParam), new IntPtr(0));
+            }
+            uint loops = 0;
+            while (true)
+            {
+                if (Environment.ProcessorCount == 1 || (++loops % 100) == 0)
+                {
+                    SendMessage(richTextBox2.Handle, (int)Message.WM_VSCROLL, new IntPtr(wParam), new IntPtr(0));
+                    Thread.Sleep(1);
+
+                }
+                else
+                {
+                    break;
+                    Thread.SpinWait(20);
+
+                }
+            }
+        }
+
+        private void timer1_Tick_1(object sender, EventArgs e)
+        {
+            //onsole.WriteLine("Hola\n");
+            int nPos = GetScrollPos(richTextBox1.Handle, (int)ScrollBarType.SbVert);
+            nPos <<= 16;
+            uint wParam = (uint)ScrollBarCommands.SB_THUMBPOSITION | (uint)nPos;
+            SendMessage(richTextBox4.Handle, (int)Message.WM_VSCROLL, new IntPtr(wParam), new IntPtr(0));
+
+            currentLine = richTextBox1.GetLineFromCharIndex(richTextBox1.SelectionStart);
+            currentCol = richTextBox1.SelectionStart - richTextBox1.GetFirstCharIndexFromLine(currentLine);
+
+            string lineaCol = "";
+            lineaCol = currentLine + 1 + ":" + currentCol;
+            label3.Text = lineaCol;
+            //Console.WriteLine(lineaCol);
+            Console.WriteLine(currentLine);
+        }
+
+        private void richTextBox4_TextChanged(object sender, EventArgs e)
+        {
+            //base.WndProc(ref m);
+            HideCaret(this.Handle);
         }
     }
 }
