@@ -56,8 +56,8 @@
             this.lexicoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.Sintactico = new System.Windows.Forms.ToolStripMenuItem();
             this.semanticoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.hashTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.codigoIntermedioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hashTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.richTextBox2 = new System.Windows.Forms.RichTextBox();
             this.menuStrip4 = new System.Windows.Forms.MenuStrip();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
@@ -101,6 +101,7 @@
             this.richTextBox1.BackColor = System.Drawing.SystemColors.InactiveCaption;
             this.richTextBox1.Location = new System.Drawing.Point(3, 3);
             this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedBoth;
             this.richTextBox1.Size = new System.Drawing.Size(674, 506);
             this.richTextBox1.TabIndex = 1;
             this.richTextBox1.Text = "";
@@ -139,28 +140,28 @@
             // openToolStripMenuItem
             // 
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
-            this.openToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.openToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.openToolStripMenuItem.Text = "Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.openToolStripMenuItem_Click);
             // 
             // saveToolStripMenuItem
             // 
             this.saveToolStripMenuItem.Name = "saveToolStripMenuItem";
-            this.saveToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.saveToolStripMenuItem.Text = "Save";
             this.saveToolStripMenuItem.Click += new System.EventHandler(this.saveToolStripMenuItem_Click);
             // 
             // saveAsToolStripMenuItem
             // 
             this.saveAsToolStripMenuItem.Name = "saveAsToolStripMenuItem";
-            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.saveAsToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.saveAsToolStripMenuItem.Text = "Save as";
             this.saveAsToolStripMenuItem.Click += new System.EventHandler(this.saveAsToolStripMenuItem_Click);
             // 
             // closeToolStripMenuItem
             // 
             this.closeToolStripMenuItem.Name = "closeToolStripMenuItem";
-            this.closeToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.closeToolStripMenuItem.Size = new System.Drawing.Size(112, 22);
             this.closeToolStripMenuItem.Text = "Close";
             this.closeToolStripMenuItem.Click += new System.EventHandler(this.closeToolStripMenuItem_Click);
             // 
@@ -275,6 +276,7 @@
             // 
             // label1
             // 
+            this.label1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label1.Location = new System.Drawing.Point(3, 3);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(45, 506);
@@ -342,17 +344,17 @@
             this.semanticoToolStripMenuItem.Size = new System.Drawing.Size(75, 20);
             this.semanticoToolStripMenuItem.Text = "Semantico";
             // 
-            // hashTableToolStripMenuItem
-            // 
-            this.hashTableToolStripMenuItem.Name = "hashTableToolStripMenuItem";
-            this.hashTableToolStripMenuItem.Size = new System.Drawing.Size(76, 20);
-            this.hashTableToolStripMenuItem.Text = "Hash Table";
-            // 
             // codigoIntermedioToolStripMenuItem
             // 
             this.codigoIntermedioToolStripMenuItem.Name = "codigoIntermedioToolStripMenuItem";
             this.codigoIntermedioToolStripMenuItem.Size = new System.Drawing.Size(119, 20);
             this.codigoIntermedioToolStripMenuItem.Text = "Codigo Intermedio";
+            // 
+            // hashTableToolStripMenuItem
+            // 
+            this.hashTableToolStripMenuItem.Name = "hashTableToolStripMenuItem";
+            this.hashTableToolStripMenuItem.Size = new System.Drawing.Size(76, 20);
+            this.hashTableToolStripMenuItem.Text = "Hash Table";
             // 
             // richTextBox2
             // 

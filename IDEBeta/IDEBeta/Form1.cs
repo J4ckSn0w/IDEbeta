@@ -124,10 +124,10 @@ namespace IDEBeta
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
-            if(richTextBox1.Lines.Length != lineas)
+           if(richTextBox1.Lines.Length + 1 != lineas)
             {
-                string nueva = "\n";
-                for(int i = 1;i<richTextBox1.Lines.Length; i++)
+                string nueva = "1\n";
+                for(int i = 2;i<richTextBox1.Lines.Length+1; i++)
                 {
                     nueva += (i.ToString() + "\n");
                     
@@ -136,7 +136,6 @@ namespace IDEBeta
                 label1.Text = nueva.ToString();
                 lineas = richTextBox1.Lines.Length;
             }
-            label1.Text = richTextBox1.Lines.Length.ToString();
         }
     }
 }
