@@ -18,6 +18,7 @@ namespace IDEBeta
         /*Variables globales para control de texto*/
         string nombreArchivo;
         int lineas = 0;
+        bool cambiosGuardados = false;
 
         int currentLine = 0;
         int currentCol = 0;
@@ -98,10 +99,7 @@ namespace IDEBeta
         /*Fin de probando cosas*/
         private void Form1_Load(object sender, EventArgs e)
         {
-            //this.TopMost = true;
             this.WindowState = FormWindowState.Maximized;
-            /*Thread thread2 = new Thread(new ThreadStart(scroll));
-            thread2.Start();*/
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -112,11 +110,25 @@ namespace IDEBeta
         private void button1_Click(object sender, EventArgs e)
         {
             ImageList imageList = new ImageList();
-            //imageList.ImageSize.Width = 16;
-            //button1.Width = 16;
-            //button1.Height = 16;
+            DialogResult respuesta;
+            if(cambiosGuardados == false)
+            {
+                respuesta = MessageBox.Show("Desea guardar los cambios en el archivo?","Guardar",MessageBoxButtons.YesNoCancel);
+                if(respuesta == DialogResult.Yes)
+                {
+                    saveToolStripMenuItem_Click(sender, e);
+                    nombreArchivo = "";
+                    richTextBox1.Clear();
+                }
+                if(respuesta == DialogResult.No)
+                {
+                    nombreArchivo = "";
+                    richTextBox1.Clear();
+                }
+            }
+            nombreArchivo = "";
+            richTextBox1.Clear();
         }
-
         private void debuToolStripMenuItem_Click(object sender, EventArgs e)
         {
 
@@ -144,10 +156,7 @@ namespace IDEBeta
 
         private void splitContainer1_Panel1_Paint(object sender, PaintEventArgs e)
         {
-            int nPos = GetScrollPos(richTextBox1.Handle, (int)ScrollBarType.SbVert);
-            nPos <<= 16;
-            uint wParam = (uint)ScrollBarCommands.SB_THUMBPOSITION | (uint)nPos;
-            SendMessage(richTextBox2.Handle, (int)Message.WM_VSCROLL, new IntPtr(wParam), new IntPtr(0));
+
         }
 
         private void menuStrip3_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -200,6 +209,7 @@ namespace IDEBeta
             }
             using (var saveFile = new System.IO.StreamWriter(nombreArchivo + ".txt"))
                 saveFile.WriteLine(richTextBox1.Text);
+            cambiosGuardados = true;
         }
 
         private void richTextBox1_TextChanged(object sender, EventArgs e)
@@ -222,27 +232,7 @@ namespace IDEBeta
                 SendMessage(richTextBox4.Handle, (int)Message.WM_VSCROLL, new IntPtr(wParam), new IntPtr(0));
                 /*Probando cosas*/
             }
-            SendMessage(richTextBox2.Handle, (int)Message.WM_VSCROLL, new IntPtr(wParam), new IntPtr(0));
-            if(string.Equals(this.VScroll.ToString(),"True"))
-            {
-                SendMessage(richTextBox2.Handle, (int)Message.WM_VSCROLL, new IntPtr(wParam), new IntPtr(0));
-            }
-            uint loops = 0;
-            while (true)
-            {
-                if (Environment.ProcessorCount == 1 || (++loops % 100) == 0)
-                {
-                    SendMessage(richTextBox2.Handle, (int)Message.WM_VSCROLL, new IntPtr(wParam), new IntPtr(0));
-                    Thread.Sleep(1);
-
-                }
-                else
-                {
-                    break;
-                    Thread.SpinWait(20);
-
-                }
-            }
+            cambiosGuardados = false;
         }
 
         private void timer1_Tick_1(object sender, EventArgs e)
@@ -259,14 +249,40 @@ namespace IDEBeta
             string lineaCol = "";
             lineaCol = currentLine + 1 + ":" + currentCol;
             label3.Text = lineaCol;
-            //Console.WriteLine(lineaCol);
-            Console.WriteLine(currentLine);
         }
-
         private void richTextBox4_TextChanged(object sender, EventArgs e)
         {
-            //base.WndProc(ref m);
-            HideCaret(this.Handle);
+
+        }
+
+        private void editToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            saveAsToolStripMenuItem_Click(sender, e);
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            saveToolStripMenuItem_Click(sender, e);
+        }
+
+        private void copyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Copy();
+        }
+
+        private void pasteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Paste();
+        }
+
+        private void cutToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            richTextBox1.Cut();
         }
     }
 }
