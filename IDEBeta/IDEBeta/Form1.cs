@@ -166,14 +166,30 @@ namespace IDEBeta
 
         private void openToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            string r;
+            /*string r;
             openFileDialog1.ShowDialog();
-            using (System.IO.StreamReader file = new System.IO.StreamReader(openFileDialog1.FileName))
-            {
-                r = file.ReadLine();
-            }
+            System.IO.StreamReader file = new System.IO.StreamReader(openFileDialog1.FileName);
+            r = file.ReadLine();
+            Console.WriteLine("Contenido:\n");
+            Console.WriteLine(r.ToString());
             richTextBox1.Text = r.ToString();
             nombreArchivo = openFileDialog1.FileName;
+            //Console.WriteLine(nombreArchivo);*/
+            string contentFile;
+
+            //Se muestra el explorador de archivos para buscar el archivo
+            openFileDialog1.ShowDialog();
+
+            string aux = openFileDialog1.FileName;
+            if (aux != null && aux != "")
+            {
+                System.IO.StreamReader file = new System.IO.StreamReader(aux);
+                contentFile = file.ReadToEnd();
+                richTextBox1.Text = contentFile;
+
+                //Se actualiza el nombre
+                this.nombreArchivo = aux;
+            }
         }
 
         private void fileToolStripMenuItem1_Click(object sender, EventArgs e)
