@@ -56,24 +56,23 @@
             this.label2 = new System.Windows.Forms.Label();
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.richTextBox4 = new System.Windows.Forms.RichTextBox();
-            this.menuStrip3 = new System.Windows.Forms.MenuStrip();
-            this.lexicoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.Sintactico = new System.Windows.Forms.ToolStripMenuItem();
-            this.semanticoToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.codigoIntermedioToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.hashTableToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
-            this.menuStrip4 = new System.Windows.Forms.MenuStrip();
-            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem5 = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem8 = new System.Windows.Forms.ToolStripMenuItem();
-            this.richTextBox3 = new System.Windows.Forms.RichTextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.tabPage6 = new System.Windows.Forms.TabPage();
+            this.tabControl2 = new System.Windows.Forms.TabControl();
+            this.tabPage5 = new System.Windows.Forms.TabPage();
+            this.tabPage7 = new System.Windows.Forms.TabPage();
+            this.tabPage8 = new System.Windows.Forms.TabPage();
+            this.tabPage9 = new System.Windows.Forms.TabPage();
+            this.tabPage10 = new System.Windows.Forms.TabPage();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
@@ -81,8 +80,8 @@
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.menuStrip3.SuspendLayout();
-            this.menuStrip4.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabControl2.SuspendLayout();
             this.SuspendLayout();
             // 
             // contextMenuStrip1
@@ -192,21 +191,21 @@
             // copyToolStripMenuItem
             // 
             this.copyToolStripMenuItem.Name = "copyToolStripMenuItem";
-            this.copyToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.copyToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
             this.copyToolStripMenuItem.Text = "Copy";
             this.copyToolStripMenuItem.Click += new System.EventHandler(this.copyToolStripMenuItem_Click);
             // 
             // pasteToolStripMenuItem
             // 
             this.pasteToolStripMenuItem.Name = "pasteToolStripMenuItem";
-            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.pasteToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
             this.pasteToolStripMenuItem.Text = "Paste";
             this.pasteToolStripMenuItem.Click += new System.EventHandler(this.pasteToolStripMenuItem_Click);
             // 
             // cutToolStripMenuItem
             // 
             this.cutToolStripMenuItem.Name = "cutToolStripMenuItem";
-            this.cutToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.cutToolStripMenuItem.Size = new System.Drawing.Size(102, 22);
             this.cutToolStripMenuItem.Text = "Cut";
             this.cutToolStripMenuItem.Click += new System.EventHandler(this.cutToolStripMenuItem_Click);
             // 
@@ -353,114 +352,6 @@
             this.richTextBox4.WordWrap = false;
             this.richTextBox4.TextChanged += new System.EventHandler(this.richTextBox4_TextChanged);
             // 
-            // menuStrip3
-            // 
-            this.menuStrip3.AutoSize = false;
-            this.menuStrip3.Dock = System.Windows.Forms.DockStyle.None;
-            this.menuStrip3.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.lexicoToolStripMenuItem,
-            this.Sintactico,
-            this.semanticoToolStripMenuItem,
-            this.codigoIntermedioToolStripMenuItem,
-            this.hashTableToolStripMenuItem});
-            this.menuStrip3.Location = new System.Drawing.Point(755, 41);
-            this.menuStrip3.Name = "menuStrip3";
-            this.menuStrip3.Size = new System.Drawing.Size(411, 24);
-            this.menuStrip3.TabIndex = 11;
-            this.menuStrip3.Text = "menuStrip3";
-            this.menuStrip3.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.menuStrip3_ItemClicked);
-            // 
-            // lexicoToolStripMenuItem
-            // 
-            this.lexicoToolStripMenuItem.Name = "lexicoToolStripMenuItem";
-            this.lexicoToolStripMenuItem.Size = new System.Drawing.Size(53, 20);
-            this.lexicoToolStripMenuItem.Text = "Lexico";
-            // 
-            // Sintactico
-            // 
-            this.Sintactico.Name = "Sintactico";
-            this.Sintactico.Size = new System.Drawing.Size(71, 20);
-            this.Sintactico.Text = "Sintactico";
-            // 
-            // semanticoToolStripMenuItem
-            // 
-            this.semanticoToolStripMenuItem.Name = "semanticoToolStripMenuItem";
-            this.semanticoToolStripMenuItem.Size = new System.Drawing.Size(75, 20);
-            this.semanticoToolStripMenuItem.Text = "Semantico";
-            // 
-            // codigoIntermedioToolStripMenuItem
-            // 
-            this.codigoIntermedioToolStripMenuItem.Name = "codigoIntermedioToolStripMenuItem";
-            this.codigoIntermedioToolStripMenuItem.Size = new System.Drawing.Size(119, 20);
-            this.codigoIntermedioToolStripMenuItem.Text = "Codigo Intermedio";
-            // 
-            // hashTableToolStripMenuItem
-            // 
-            this.hashTableToolStripMenuItem.Name = "hashTableToolStripMenuItem";
-            this.hashTableToolStripMenuItem.Size = new System.Drawing.Size(76, 20);
-            this.hashTableToolStripMenuItem.Text = "Hash Table";
-            // 
-            // richTextBox2
-            // 
-            this.richTextBox2.Location = new System.Drawing.Point(755, 77);
-            this.richTextBox2.Name = "richTextBox2";
-            this.richTextBox2.ReadOnly = true;
-            this.richTextBox2.Size = new System.Drawing.Size(515, 478);
-            this.richTextBox2.TabIndex = 12;
-            this.richTextBox2.Text = "";
-            // 
-            // menuStrip4
-            // 
-            this.menuStrip4.AutoSize = false;
-            this.menuStrip4.Dock = System.Windows.Forms.DockStyle.None;
-            this.menuStrip4.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.toolStripMenuItem3,
-            this.toolStripMenuItem4,
-            this.toolStripMenuItem5,
-            this.toolStripMenuItem8});
-            this.menuStrip4.Location = new System.Drawing.Point(36, 572);
-            this.menuStrip4.Name = "menuStrip4";
-            this.menuStrip4.Size = new System.Drawing.Size(414, 24);
-            this.menuStrip4.TabIndex = 13;
-            this.menuStrip4.Text = "menuStrip4";
-            // 
-            // toolStripMenuItem3
-            // 
-            this.toolStripMenuItem3.BackColor = System.Drawing.Color.LightGray;
-            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(97, 20);
-            this.toolStripMenuItem3.Text = "Errores Lexicos";
-            // 
-            // toolStripMenuItem4
-            // 
-            this.toolStripMenuItem4.BackColor = System.Drawing.Color.LightGray;
-            this.toolStripMenuItem4.Name = "toolStripMenuItem4";
-            this.toolStripMenuItem4.Size = new System.Drawing.Size(115, 20);
-            this.toolStripMenuItem4.Text = "Errores Sintacticos";
-            // 
-            // toolStripMenuItem5
-            // 
-            this.toolStripMenuItem5.BackColor = System.Drawing.Color.LightGray;
-            this.toolStripMenuItem5.Name = "toolStripMenuItem5";
-            this.toolStripMenuItem5.Size = new System.Drawing.Size(119, 20);
-            this.toolStripMenuItem5.Text = "Errores Semanticos";
-            // 
-            // toolStripMenuItem8
-            // 
-            this.toolStripMenuItem8.BackColor = System.Drawing.Color.LightGray;
-            this.toolStripMenuItem8.Name = "toolStripMenuItem8";
-            this.toolStripMenuItem8.Size = new System.Drawing.Size(76, 20);
-            this.toolStripMenuItem8.Text = "Resultados";
-            // 
-            // richTextBox3
-            // 
-            this.richTextBox3.Location = new System.Drawing.Point(36, 599);
-            this.richTextBox3.Name = "richTextBox3";
-            this.richTextBox3.ReadOnly = true;
-            this.richTextBox3.Size = new System.Drawing.Size(1234, 123);
-            this.richTextBox3.TabIndex = 14;
-            this.richTextBox3.Text = "";
-            // 
             // label3
             // 
             this.label3.AutoSize = true;
@@ -478,16 +369,140 @@
             // 
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick_1);
             // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Controls.Add(this.tabPage4);
+            this.tabControl1.Controls.Add(this.tabPage6);
+            this.tabControl1.Location = new System.Drawing.Point(754, 46);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(516, 512);
+            this.tabControl1.TabIndex = 16;
+            // 
+            // tabPage1
+            // 
+            this.tabPage1.Location = new System.Drawing.Point(4, 22);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(508, 486);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Lexico";
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(508, 486);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Sintactico";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(508, 486);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Semantico";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // tabPage4
+            // 
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(508, 486);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Hash Table";
+            this.tabPage4.UseVisualStyleBackColor = true;
+            // 
+            // tabPage6
+            // 
+            this.tabPage6.Location = new System.Drawing.Point(4, 22);
+            this.tabPage6.Name = "tabPage6";
+            this.tabPage6.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage6.Size = new System.Drawing.Size(508, 486);
+            this.tabPage6.TabIndex = 5;
+            this.tabPage6.Text = "Codigo Intermedio";
+            this.tabPage6.UseVisualStyleBackColor = true;
+            // 
+            // tabControl2
+            // 
+            this.tabControl2.Controls.Add(this.tabPage5);
+            this.tabControl2.Controls.Add(this.tabPage7);
+            this.tabControl2.Controls.Add(this.tabPage8);
+            this.tabControl2.Controls.Add(this.tabPage9);
+            this.tabControl2.Controls.Add(this.tabPage10);
+            this.tabControl2.Location = new System.Drawing.Point(13, 588);
+            this.tabControl2.Name = "tabControl2";
+            this.tabControl2.SelectedIndex = 0;
+            this.tabControl2.Size = new System.Drawing.Size(1253, 134);
+            this.tabControl2.TabIndex = 17;
+            // 
+            // tabPage5
+            // 
+            this.tabPage5.Location = new System.Drawing.Point(4, 22);
+            this.tabPage5.Name = "tabPage5";
+            this.tabPage5.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage5.Size = new System.Drawing.Size(1245, 108);
+            this.tabPage5.TabIndex = 0;
+            this.tabPage5.Text = "Errores Lexicos";
+            this.tabPage5.UseVisualStyleBackColor = true;
+            // 
+            // tabPage7
+            // 
+            this.tabPage7.Location = new System.Drawing.Point(4, 22);
+            this.tabPage7.Name = "tabPage7";
+            this.tabPage7.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage7.Size = new System.Drawing.Size(1245, 108);
+            this.tabPage7.TabIndex = 1;
+            this.tabPage7.Text = "Errores Sintacticos";
+            this.tabPage7.UseVisualStyleBackColor = true;
+            // 
+            // tabPage8
+            // 
+            this.tabPage8.Location = new System.Drawing.Point(4, 22);
+            this.tabPage8.Name = "tabPage8";
+            this.tabPage8.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage8.Size = new System.Drawing.Size(1245, 108);
+            this.tabPage8.TabIndex = 2;
+            this.tabPage8.Text = "Errores Semanticos";
+            this.tabPage8.UseVisualStyleBackColor = true;
+            // 
+            // tabPage9
+            // 
+            this.tabPage9.Location = new System.Drawing.Point(4, 22);
+            this.tabPage9.Name = "tabPage9";
+            this.tabPage9.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage9.Size = new System.Drawing.Size(1245, 108);
+            this.tabPage9.TabIndex = 3;
+            this.tabPage9.Text = "Errores Hash Table";
+            this.tabPage9.UseVisualStyleBackColor = true;
+            // 
+            // tabPage10
+            // 
+            this.tabPage10.Location = new System.Drawing.Point(4, 22);
+            this.tabPage10.Name = "tabPage10";
+            this.tabPage10.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage10.Size = new System.Drawing.Size(1245, 108);
+            this.tabPage10.TabIndex = 4;
+            this.tabPage10.Text = "Errores Codigo Intermedio";
+            this.tabPage10.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1282, 734);
+            this.Controls.Add(this.tabControl2);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.label3);
-            this.Controls.Add(this.richTextBox3);
-            this.Controls.Add(this.menuStrip4);
-            this.Controls.Add(this.menuStrip3);
-            this.Controls.Add(this.richTextBox2);
             this.Controls.Add(this.menuStrip2);
             this.Controls.Add(this.splitContainer1);
             this.Controls.Add(this.label2);
@@ -508,10 +523,8 @@
             this.splitContainer1.Panel2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
-            this.menuStrip3.ResumeLayout(false);
-            this.menuStrip3.PerformLayout();
-            this.menuStrip4.ResumeLayout(false);
-            this.menuStrip4.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.tabControl2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -541,19 +554,6 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem2;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.MenuStrip menuStrip3;
-        private System.Windows.Forms.ToolStripMenuItem lexicoToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem Sintactico;
-        private System.Windows.Forms.ToolStripMenuItem semanticoToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem hashTableToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem codigoIntermedioToolStripMenuItem;
-        private System.Windows.Forms.RichTextBox richTextBox2;
-        private System.Windows.Forms.MenuStrip menuStrip4;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem3;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem4;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem5;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem8;
-        private System.Windows.Forms.RichTextBox richTextBox3;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.SaveFileDialog saveFileDialog1;
@@ -564,6 +564,18 @@
         private System.Windows.Forms.ToolStripMenuItem copyToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem pasteToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem cutToolStripMenuItem;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.TabPage tabPage6;
+        private System.Windows.Forms.TabControl tabControl2;
+        private System.Windows.Forms.TabPage tabPage5;
+        private System.Windows.Forms.TabPage tabPage7;
+        private System.Windows.Forms.TabPage tabPage8;
+        private System.Windows.Forms.TabPage tabPage9;
+        private System.Windows.Forms.TabPage tabPage10;
     }
 }
 

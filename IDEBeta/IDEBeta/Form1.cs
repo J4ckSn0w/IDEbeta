@@ -17,7 +17,7 @@ namespace IDEBeta
     {
         /*Variables globales para control de texto*/
         string nombreArchivo;
-        int lineas = 0;
+        int lineas = 1;
         bool cambiosGuardados = false;
 
         int currentLine = 0;
@@ -189,7 +189,9 @@ namespace IDEBeta
 
                 //Se actualiza el nombre
                 this.nombreArchivo = aux;
+                file.Close();
             }
+            richTextBox1_TextChanged(sender, e);
         }
 
         private void fileToolStripMenuItem1_Click(object sender, EventArgs e)
@@ -233,6 +235,7 @@ namespace IDEBeta
             int nPos = GetScrollPos(richTextBox1.Handle, (int)ScrollBarType.SbVert);
             nPos <<= 16;
             uint wParam = (uint)ScrollBarCommands.SB_THUMBPOSITION | (uint)nPos;
+            /*
             if (richTextBox1.Lines.Length + 1 != lineas)
             {
                 string nueva = "1\n";
@@ -246,9 +249,47 @@ namespace IDEBeta
                 /*Probando cosas*/
                 
                 SendMessage(richTextBox4.Handle, (int)Message.WM_VSCROLL, new IntPtr(wParam), new IntPtr(0));
-                /*Probando cosas*/
-            }
-            cambiosGuardados = false;
+            /*Probando cosas
+        }*/
+
+            //Codigo de Fuantos
+                if (richTextBox1.Lines.Count() != lineas)
+                {
+                    //this.numLines = richTextBox1.Lines.Count();
+                    //this.label1.Text = "";
+                    /*for (int i = 1; i < this.numLines; i++)
+                    {
+                        //  this.label1.Text += (i).ToString() + "\n";
+
+                    }*/
+                    if (richTextBox1.Lines.Count() > this.lineas)
+                    {
+                        while(richTextBox1.Lines.Count() > this.lineas)
+                        {
+                        var li = this.lineas.ToString();
+                            richTextBox4.AppendText(li + Environment.NewLine);
+                            this.lineas++;
+                        } 
+                    }
+
+                    if (richTextBox1.Lines.Count() < this.lineas)
+                    {
+                        while (richTextBox1.Lines.Count() < this.lineas)
+                        {
+                            List<string> myList = richTextBox4.Lines.ToList();
+                            if (myList.Count > 0)
+                            {
+                                myList.RemoveAt(myList.Count - 1);
+                                richTextBox4.Lines = myList.ToArray();
+                                richTextBox4.Refresh();
+                                this.lineas--;
+                            }
+
+                        }
+                    }
+                    this.lineas = richTextBox1.Lines.Count();
+                }
+                cambiosGuardados = false;
         }
 
         private void timer1_Tick_1(object sender, EventArgs e)
