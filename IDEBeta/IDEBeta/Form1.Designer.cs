@@ -73,6 +73,7 @@
             this.tabPage8 = new System.Windows.Forms.TabPage();
             this.tabPage9 = new System.Windows.Forms.TabPage();
             this.tabPage10 = new System.Windows.Forms.TabPage();
+            this.lexico = new System.Windows.Forms.RichTextBox();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
@@ -81,6 +82,7 @@
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -384,6 +386,7 @@
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.lexico);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
@@ -495,6 +498,15 @@
             this.tabPage10.Text = "Errores Codigo Intermedio";
             this.tabPage10.UseVisualStyleBackColor = true;
             // 
+            // lexico
+            // 
+            this.lexico.Location = new System.Drawing.Point(6, 0);
+            this.lexico.Name = "lexico";
+            this.lexico.ReadOnly = true;
+            this.lexico.Size = new System.Drawing.Size(502, 486);
+            this.lexico.TabIndex = 0;
+            this.lexico.Text = "";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -524,6 +536,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
             this.tabControl2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -576,6 +589,7 @@
         private System.Windows.Forms.TabPage tabPage8;
         private System.Windows.Forms.TabPage tabPage9;
         private System.Windows.Forms.TabPage tabPage10;
+        private System.Windows.Forms.RichTextBox lexico;
     }
 }
 
