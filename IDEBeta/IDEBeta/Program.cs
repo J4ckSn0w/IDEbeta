@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace IDEBeta
 {
@@ -38,14 +39,19 @@ namespace IDEBeta
         }
     }
 
+    public class token
+    {
+        string tipo;
+        string lexema;
+        public token(string tipo, string lexema)
+        {
+            this.tipo = tipo;
+            this.lexema = lexema;
+        }
+    }
+
     static class Program
     {
-        public class token
-        {
-            string tipo;
-            string lexema;
-        }
-        
         
         enum Estado
         {
@@ -94,6 +100,8 @@ namespace IDEBeta
         [STAThread]
         static void Main()
         {
+            /*array de tokens*/
+            List<token> tokens = new List<token>();
             /*Diccionario Palabras Reservadas*/
             //main, if, then, else, end, do, while, cin, cout, real, int, boolean
             Dictionary<string, palabraReservada> reservadas = new Dictionary<string, palabraReservada>();
@@ -143,8 +151,8 @@ namespace IDEBeta
             if (argumentos.Count() > 1)
             {
                 //MessageBox.Show("Entro a modo consola.");
-                MessageBox.Show(argumentos.Count().ToString());
-                MessageBox.Show(argumentos[1].ToString());
+                //MessageBox.Show(argumentos.Count().ToString());
+                //MessageBox.Show(argumentos[1].ToString());
                 leerArchivo(argumentos[1]);
                 return;
             }
@@ -160,7 +168,7 @@ namespace IDEBeta
                 contenido = file.ReadToEnd();
                 file.Close();
                 //MessageBox.Show("Depues de leer el archivo");
-                MessageBox.Show("Size" + contenido.Length.ToString());
+                //MessageBox.Show("Size" + contenido.Length.ToString());
                 /*char ch = 'a';
                 for(int i = 0;i<contenido.Length; i++)
                 {
@@ -237,7 +245,7 @@ namespace IDEBeta
                                 {
                                     estado = Estado.Comparacion;
                                     tokenActual = Token.Error;
-                                    MessageBox.Show("Entre al igual");
+                                    //MessageBox.Show("Entre al igual");
                                 }
                                 else if(ch.ToString() == "<")
                                 {
@@ -266,7 +274,7 @@ namespace IDEBeta
                                 }
                                 else
                                 {
-                                    MessageBox.Show("Entre al ELSE");
+                                    //MessageBox.Show("Entre al ELSE");
                                     guardar = false;
                                     estado = Estado.Final;
                                     lexemaActual = "";
@@ -417,7 +425,7 @@ namespace IDEBeta
                             case Estado.Comparacion:
                                 if(ch.ToString() == "=")
                                 {
-                                    MessageBox.Show("Entre a la igualacion");
+                                    //MessageBox.Show("Entre a la igualacion");
                                     tokenActual = Token.Comparacion;
                                     estado = Estado.Final;
                                     break;
@@ -470,7 +478,7 @@ namespace IDEBeta
                             lexemaActual += ch;
                         }
                     }
-                    MessageBox.Show("Operador: "+tokenActual.ToString());
+                    //MessageBox.Show("Operador: "+tokenActual.ToString());
                     /*if((int)ch == 3)
                     {
                         MessageBox.Show("Dentro de if final de caracter " + fuera.ToString());
@@ -486,7 +494,9 @@ namespace IDEBeta
                         resultado += "->";
                         resultado += lexemaActual;
                         resultado += '\n';
-                        MessageBox.Show(resultado);
+                        //MessageBox.Show(resultado);
+                        /*Guardamos el token en el array de tokens*/
+                        tokens.Add(new token(tokenActual.ToString(),lexemaActual.ToString()));
                         lexemaActual = "";
                     }
                     //MessageBox.Show("Posicion despues de Final " + posicion);
@@ -494,22 +504,26 @@ namespace IDEBeta
                     //resultado += "\n";
                     /*Checar palabras reservadas*/
                 }
-                MessageBox.Show("Justo despues de salir");
-                MessageBox.Show(estado.ToString());
+                //MessageBox.Show("Justo despues de salir");
+                //MessageBox.Show(estado.ToString());
                 if(estado != Estado.Final && !string.IsNullOrEmpty(lexemaActual))
                 {
                     if (reservadas.ContainsKey(lexemaActual))
                     {
                         tokenActual = Token.PalabraReservada;
                     }
-                    MessageBox.Show("Entre en IF final");
-                    MessageBox.Show("tokenActual " + tokenActual.ToString());
-                    MessageBox.Show("LexemaActual" + lexemaActual.ToString());
+                    //MessageBox.Show("Entre en IF final");
+                    //MessageBox.Show("tokenActual " + tokenActual.ToString());
+                    //MessageBox.Show("LexemaActual" + lexemaActual.ToString());
                     resultado += tokenActual.ToString();
                     resultado += "->";
                     resultado += lexemaActual;
+                    if(tokenActual == Token.Error)
+                    {
+                        //resultado += " en linea " + linea + " columna " + columna;
+                    }
                     resultado += '\n';
-                    MessageBox.Show(resultado);
+                    //MessageBox.Show(resultado);
                 }
                 if (!string.IsNullOrEmpty(lexemaActual))
                 {
@@ -517,17 +531,18 @@ namespace IDEBeta
                     resultado += "->";
                     resultado += lexemaActual;
                     resultado += '\n';
-                    MessageBox.Show(resultado);
+                    //MessageBox.Show(resultado);
                     lexemaActual = "";
                 }
-                MessageBox.Show("Sali del while");
+                //MessageBox.Show("Sali del while");
                 guardarResultado(resultado);
+                Console.WriteLine(resultado);
             }
             char siguienteCaracter(int posicionActual)
             {
                 if(posicionActual == contenido.Length)
                 {
-                    MessageBox.Show("Entre a el size");
+                    //MessageBox.Show("Entre a el size");
                     //MessageBox.Show("tokenActual " + tokenActual.ToString());
                     //fuera = tokenActual;
                     return (char)3;
@@ -535,7 +550,7 @@ namespace IDEBeta
                 var ch = contenido[posicionActual];
                 if (ch == null)
                 {
-                    MessageBox.Show("Entre a el else de ch");
+                    //MessageBox.Show("Entre a el else de ch");
                 }
                 return ch;
             }
@@ -550,9 +565,9 @@ namespace IDEBeta
                 using (var saveFile = new System.IO.StreamWriter("Resultados-" + fecha + ".txt"))
                 {
                     saveFile.WriteLine(contenidoTerminado);
-                    MessageBox.Show("Despues de escribir el contenido");
+                    //MessageBox.Show("Despues de escribir el contenido");
                 }
-                MessageBox.Show("Terminar Leer Archivos");
+                //MessageBox.Show("Terminar Leer Archivos");
             }
         }
     }

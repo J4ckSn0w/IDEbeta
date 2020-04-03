@@ -6,8 +6,10 @@ using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
 
@@ -52,12 +54,40 @@ namespace IDEBeta
         int lineas = 1;
         bool cambiosGuardados = false;
 
-        public class token
+        class token
         {
-            string tipo;
-            string lexema;
-        }
+            public string tipo { get; set; }
+            public string lexema { get; set; }
+            /*public token(string tipo, string lexema)
+            {
+                tipo = tipo;
+                lexema = lexema;
+            }*/
 
+            public string Tipo
+            {
+                get
+                {
+                    return tipo;
+                }
+                set
+                {
+                    tipo = value;
+                }
+            }
+
+            public string Lexema
+            {
+                get
+                {
+                    return lexema;
+                }
+                set
+                {
+                    lexema = value;
+                }
+            }
+        }
 
         enum Estado
         {
@@ -142,6 +172,7 @@ namespace IDEBeta
             this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.ReadOnlyRichTextBox_Mouse);
             base.TabStop = false;
             HideCaret(this.Handle);
+            richTextBox4.Text = null;
         }
         [DllImport("User32.dll")]
         public extern static int GetScrollPos(IntPtr hWnd, int nBar);
@@ -202,7 +233,9 @@ namespace IDEBeta
                 //Console.WriteLine("Entro a modo consola.\n");
             }
             //MessageBox.Show("Cargar el form.");*/
-            this.WindowState = FormWindowState.Maximized;
+            //this.WindowState = FormWindowState.Maximized;
+            this.MaximizeBox = false;
+            //this.MinimizeBox = false;
         }
 
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -254,16 +287,26 @@ namespace IDEBeta
              2 = Punto
              3 = Flotante
              10 = finalizo*/
-            Estado estado = Estado.Inicio;
+        Estado estado = Estado.Inicio;
         Token tokenActual = Token.Entero;
+        Token tokenAnterior = Token.Entero;
         Token fuera = Token.Flotante;
         bool guardar = true;
         char caracterActual;
         string contenido;
         int posicion = 0;
         string lexemaActual = "";
+        string errorActual = "";
+
+        /*Control de archivo*/
+        int linea = 1;
+        int columna = 0;
+        string resultado = "";
         void leerArchivo(string nombreArchivo)
         {
+            /*array de tokens*/
+            List<token> tokensLexicos = new List<token>();
+            List<token> tokensErrorLexicos = new List<token>();
             /*Diccionario Palabras Reservadas*/
             //main, if, then, else, end, do, while, cin, cout, real, int, boolean
             Dictionary<string, palabraReservada> reservadas = new Dictionary<string, palabraReservada>();
@@ -279,6 +322,8 @@ namespace IDEBeta
             reservadas.Add("real", new palabraReservada("real"));
             reservadas.Add("int", new palabraReservada("int"));
             reservadas.Add("boolean", new palabraReservada("boolean"));
+            reservadas.Add("until", new palabraReservada("until"));
+            reservadas.Add("float", new palabraReservada("float"));
             /*Diccionario caracteres especiales*/
             //+ - * /  % < <= > >= == != := ( ) { } // /**/ ++ -- 
             Dictionary<string, caracteresEspeciales> especiales = new Dictionary<string, caracteresEspeciales>();
@@ -288,6 +333,8 @@ namespace IDEBeta
             especiales.Add("}", new caracteresEspeciales("}"));
             especiales.Add("[", new caracteresEspeciales("["));
             especiales.Add("]", new caracteresEspeciales("]"));
+            especiales.Add(";", new caracteresEspeciales(";"));
+            especiales.Add(",", new caracteresEspeciales(","));
             /*Diccionario de operadores*/
             Dictionary<string, Operadores> operadores = new Dictionary<string, Operadores>();
             operadores.Add("*", new Operadores("*"));
@@ -309,7 +356,6 @@ namespace IDEBeta
             /*Analisis Lexico*/
             char ch = 'a';
             var contenidoChar = contenido.ToCharArray();
-            string resultado = "";
             while (/*posicion < contenido.Length - 2*/(int)ch != 3)
             {
                 estado = Estado.Inicio;
@@ -319,6 +365,7 @@ namespace IDEBeta
                 {
                     //MessageBox.Show("Token antes de leer el siguiente caracter "+tokenActual.ToString());
                     ch = siguienteCaracter(posicion++);
+                    columna++;
                     guardar = true;
                     //MessageBox.Show(((int)ch).ToString());
                     switch (estado)
@@ -338,7 +385,14 @@ namespace IDEBeta
                                 tokenActual = Token.ID;
                                 //MessageBox.Show("Entre en es letra");
                             }
-                            else if (ch.ToString() == "\n" || ch.ToString() == "" || (int)ch == 13)
+                            else if(ch.ToString() == "\n")
+                            {
+                                linea++;
+                                columna = 0;
+                                guardar = false;
+                                estado = Estado.Inicio;
+                            }
+                            else if (ch.ToString() == "" || (int)ch == 13)
                             {
                                 guardar = false;
                                 estado = Estado.Inicio;
@@ -426,6 +480,7 @@ namespace IDEBeta
                             {
                                 //MessageBox.Show("Entre en else");
                                 posicion--;
+                                columna--;
                                 guardar = false;
                                 estado = Estado.Final;
                                 tokenActual = Token.Entero;
@@ -434,10 +489,12 @@ namespace IDEBeta
                         case Estado.Punto:
                             if (!Char.IsDigit(ch))
                             {
-                                //guardar = false;
+                                guardar = false;
                                 posicion--;
-                                estado = Estado.Final;
+                                columna--;
+                                valorEsperado();
                                 tokenActual = Token.Error;
+                                estado = Estado.Final;
                                 break;
                             }
                             estado = Estado.Flotante;
@@ -448,6 +505,7 @@ namespace IDEBeta
                             if (!Char.IsDigit(ch))
                             {
                                 posicion--;
+                                columna--;
                                 guardar = false;
                                 estado = Estado.Final;
                                 tokenActual = Token.Flotante;
@@ -459,6 +517,7 @@ namespace IDEBeta
                             if (!Char.IsLetterOrDigit(ch) && (int)ch != 95)
                             {
                                 posicion--;
+                                columna--;
                                 guardar = false;
                                 estado = Estado.Final;
                                 tokenActual = Token.ID;
@@ -481,12 +540,14 @@ namespace IDEBeta
                                 //lexemaActual.Remove(lexemaActual.Length - 1, 1);
                                 lexemaActual = "";
                                 posicion--;
+                                columna--;
                                 guardar = false;
                                 break;
                             }
                             estado = Estado.Final;
                             tokenActual = Token.Operador;
                             posicion--;
+                            columna--;
                             break;
                         case Estado.ComentarioLinea:
                             //MessageBox.Show("Entre en comentario de linea");
@@ -530,6 +591,9 @@ namespace IDEBeta
                                 tokenActual = Token.Decremento;
                                 break;
                             }
+                            guardar = false;
+                            posicion--;
+                            columna--;
                             tokenActual = Token.Operador;
                             break;
                         case Estado.Mas:
@@ -539,6 +603,9 @@ namespace IDEBeta
                                 tokenActual = Token.Incremento;
                                 break;
                             }
+                            guardar = false;
+                            posicion--;
+                            columna--;
                             tokenActual = Token.Operador;
                             break;
                         case Estado.Asignacion:
@@ -549,6 +616,10 @@ namespace IDEBeta
                                 tokenActual = Token.Asignacion;
                                 break;
                             }
+                            posicion--;
+                            columna--;
+                            guardar = false;
+                            valorEsperado();
                             estado = Estado.Final;
                             tokenActual = Token.Error;
                             break;
@@ -561,6 +632,9 @@ namespace IDEBeta
                                 break;
                             }
                             posicion--;
+                            columna--;
+                            guardar = false;
+                            valorEsperado();
                             estado = Estado.Final;
                             tokenActual = Token.Error;
                             break;
@@ -572,6 +646,7 @@ namespace IDEBeta
                                 break;
                             }
                             posicion--;
+                            columna--;
                             tokenActual = Token.Menor;
                             estado = Estado.Final;
                             break;
@@ -583,6 +658,7 @@ namespace IDEBeta
                                 break;
                             }
                             posicion--;
+                            columna--;
                             tokenActual = Token.Mayor;
                             estado = Estado.Final;
                             break;
@@ -594,6 +670,8 @@ namespace IDEBeta
                                 break;
                             }
                             posicion--;
+                            columna--;
+                            valorEsperado();
                             tokenActual = Token.Error;
                             estado = Estado.Final;
                             break;
@@ -623,8 +701,30 @@ namespace IDEBeta
                     resultado += tokenActual.ToString();
                     resultado += "->";
                     resultado += lexemaActual;
+                    if (tokenActual == Token.Error)
+                    {
+                        tokensErrorLexicos.Add(new token()
+                        {
+                            Tipo = tokenActual.ToString(),
+                            Lexema = lexemaActual.ToString() + errorActual + " en linea " + linea + " columna " + columna
+                        });
+                        resultado += " en linea " + linea + " columna " + columna;
+                        //AGREGAR A TOKENS DE ERRORES, CON MENSAJE
+                        if (!string.IsNullOrEmpty(errorActual))
+                        {
+                            resultado += errorActual;
+                            errorActual = "";
+                        }
+                    }
                     resultado += '\n';
                     //MessageBox.Show(resultado);
+                    /*Guardamos el token en el array de tokens*/
+                    //tokensLexicos.Add(new token(tokenActual.ToString(), lexemaActual.ToString()));
+                    tokensLexicos.Add(new token()
+                    {
+                        Tipo = tokenActual.ToString(),
+                        Lexema = lexemaActual.ToString()
+                    });
                     lexemaActual = "";
                 }
                 //MessageBox.Show("Posicion despues de Final " + posicion);
@@ -646,7 +746,30 @@ namespace IDEBeta
                 resultado += tokenActual.ToString();
                 resultado += "->";
                 resultado += lexemaActual;
+                if (tokenActual == Token.Error)
+                {
+                    //tokensErrorLexicos.Add(new token(tokenActual.ToString(), lexemaActual.ToString() + errorActual));
+                    tokensErrorLexicos.Add(new token()
+                    {
+                        Tipo = tokenActual.ToString(),
+                        Lexema = lexemaActual.ToString() + errorActual + " en linea " + linea + " columna " + columna
+                    });
+                    resultado += " en linea " + linea + " columna " + columna;
+                    //AGREGAR A TOKENS DE ERRORES, CON MENSAJE
+                    if (!string.IsNullOrEmpty(errorActual))
+                    {
+                        resultado += errorActual;
+                        errorActual = "";
+                    }
+                }
                 resultado += '\n';
+                //tokensLexicos.Add(new token(tokenActual.ToString(), lexemaActual.ToString()));
+                tokensLexicos.Add(new token()
+                {
+                    Tipo = tokenActual.ToString(),
+                    Lexema = lexemaActual.ToString()
+                });
+                lexemaActual = "";
                 //MessageBox.Show(resultado);
             }
             if (!string.IsNullOrEmpty(lexemaActual))
@@ -654,15 +777,68 @@ namespace IDEBeta
                 resultado += tokenActual.ToString();
                 resultado += "->";
                 resultado += lexemaActual;
+                if (tokenActual == Token.Error)
+                {
+                    //tokensErrorLexicos.Add(new token(tokenActual.ToString(), lexemaActual.ToString() + errorActual));
+                    tokensErrorLexicos.Add(new token()
+                    {
+                        Tipo = tokenActual.ToString(),
+                        Lexema = lexemaActual.ToString() + errorActual + " en linea " + linea + " columna " + columna
+                    });
+                    resultado += " en linea " + linea + " columna " + columna;
+                    if(!string.IsNullOrEmpty(errorActual))
+                    {
+                        resultado += errorActual;
+                        errorActual = "";
+                    }
+                    
+                    //AGREGAR A TOKENS DE ERRORES, CON MENSAJE
+                }
                 resultado += '\n';
                 //MessageBox.Show(resultado);
+                //tokensLexicos.Add(new token(tokenActual.ToString(), lexemaActual.ToString()));
+                tokensLexicos.Add(new token()
+                {
+                    Tipo = tokenActual.ToString(),
+                    Lexema = lexemaActual.ToString()
+                });
                 lexemaActual = "";
             }
             //MessageBox.Show("Sali del while");
             guardarResultado(resultado);
             posicion = 0;
+            columna = 0;
+            linea = 0;
             ch = 'a';
             lexico.Text = resultado;
+            System.Diagnostics.Debug.WriteLine(resultado);
+            if(tokensErrorLexicos.Count > 0)
+            {
+                string lexicos = "";
+                foreach(var error in tokensErrorLexicos)
+                {
+                    lexicos += error.Lexema + "\n";
+                }
+                erroresLexicos.Text = lexicos;
+            }
+        }
+        void valorEsperado()
+        {
+            switch(estado)
+            {
+                case Estado.Punto:
+                    errorActual = " Se esperaba un digito";
+                    break;
+                case Estado.Asignacion:
+                    errorActual = " Se esperaba un =";
+                    break;
+                case Estado.Comparacion:
+                    errorActual = " Se esperaba un =";
+                    break;
+                case Estado.Diferente:
+                    errorActual = " Se esperaba un =";
+                    break;
+            }
         }
         char siguienteCaracter(int posicionActual)
         {
@@ -810,12 +986,12 @@ namespace IDEBeta
                 lineas = richTextBox1.Lines.Length;
                 /*Probando cosas*/
                 
-                SendMessage(richTextBox4.Handle, (int)Message.WM_VSCROLL, new IntPtr(wParam), new IntPtr(0));
+            SendMessage(richTextBox4.Handle, (int)Message.WM_VSCROLL, new IntPtr(wParam), new IntPtr(0));
             /*Probando cosas
         }*/
 
             //Codigo de Fuantos
-                if (richTextBox1.Lines.Count() != lineas)
+            if (richTextBox1.Lines.Count() != lineas - 1)
                 {
                     //this.numLines = richTextBox1.Lines.Count();
                     //this.label1.Text = "";
@@ -824,36 +1000,181 @@ namespace IDEBeta
                         //  this.label1.Text += (i).ToString() + "\n";
 
                     }*/
-                    if (richTextBox1.Lines.Count() > this.lineas)
+                    
+                    if (richTextBox1.Lines.Count()> this.lineas - 1)
                     {
-                        while(richTextBox1.Lines.Count() > this.lineas)
+                        while(richTextBox1.Lines.Count() > this.lineas - 1)
                         {
-                        var li = this.lineas.ToString();
-                            richTextBox4.AppendText(li + Environment.NewLine);
+                            var li = this.lineas.ToString();
+                            
+                        richTextBox4.AppendText(li + Environment.NewLine);
                             this.lineas++;
                         } 
                     }
 
-                    if (richTextBox1.Lines.Count() < this.lineas)
+                    if (richTextBox1.Lines.Count() < this.lineas - 1)
                     {
-                        while (richTextBox1.Lines.Count() < this.lineas)
+                        while (richTextBox1.Lines.Count() < this.lineas - 1)
                         {
                             List<string> myList = richTextBox4.Lines.ToList();
                             if (myList.Count > 0)
                             {
-                                myList.RemoveAt(myList.Count - 1);
+                                myList.RemoveAt(myList.Count - 2);
                                 richTextBox4.Lines = myList.ToArray();
                                 richTextBox4.Refresh();
                                 this.lineas--;
+                                if(this.lineas == 0)
+                                {
+                                    this.lineas++;
+                                }
                             }
 
                         }
                     }
-                    this.lineas = richTextBox1.Lines.Count();
+                    //this.lineas = richTextBox1.Lines.Count();
                 }
                 cambiosGuardados = false;
-        }
+            /*Pintar palabras reservadas en richtext*/
+            //richTextBox1.Handle.ToInt32;
+            //richTextBox1.SelectionStart = 0;
+            //richTextBox1.SelectionLength = richTextBox1.TextLength;
+            //richTextBox1.SelectionColor = richTextBox1.ForeColor;
+            //if(!string.IsNullOrEmpty(richTextBox1.Text))
+            //{
+            /*
+                richTextBox1.SelectAll();
+                richTextBox1.SelectionFont = new System.Drawing.Font(richTextBox1.SelectionFont, FontStyle.Regular);
+                int ocurrencias = 0;
+                string palabra = "int ";
+                string palabraModificada = @"\b"+palabra+@"\w*\b";
+                foreach(Match coincidencia in Regex.Matches(richTextBox1.Text,palabraModificada,RegexOptions.IgnoreCase))
+                {
+                    int seleccion = coincidencia.Index;
+                    richTextBox1.SelectionStart = seleccion;
+                    richTextBox1.SelectionLength = coincidencia.Value.Length;
+                    richTextBox1.SelectionFont = new System.Drawing.Font(richTextBox1.SelectionFont, FontStyle.Bold);
+                }*/
+            string[] words = { "int ", "float ", "real ", "boolean ", "if ", "else ", "then ", "while ", "until ","main ","end;","do ", "cin ","cout "
+            ,"int"+'\n', "float"+'\n', "real"+'\n', "boolean"+'\n', "if"+'\n', "else"+'\n', "then"+'\n', "while"+'\n', "until"+'\n',"main+'\n'","end"+'\n',"do"+'\n', "cin"+'\n',"cout"+'\n'
+            ,"int"+'\t', "float"+'\t', "real"+'\t', "boolean"+'\t', "if"+'\t', "else"+'\t', "then"+'\t', "while"+'\t', "until"+'\t',"main+'\t'","end"+'\t',"do"+'\t', "cin"+'\t',"cout"+'\t' };
 
+            string[] comentarios = { "//", "/*" };
+            // Get the current caret position.
+            currentLine = richTextBox1.GetLineFromCharIndex(richTextBox1.SelectionStart);
+            //currentCol = richTextBox1.SelectionStart - richTextBox1.GetFirstCharIndexFromLine(currentLine);
+            int posicionActual = richTextBox1.SelectionStart;// - richTextBox1.GetFirstCharIndexFromLine(currentLine);
+
+            if (!string.IsNullOrEmpty(richTextBox1.Text.ToString()))
+            {
+                richTextBox4.Focus();
+                var richTextBoxAux = new RichTextBox();
+                richTextBoxAux= richTextBox1;
+                /*Cambios para evitar parpadeo*/
+                richTextBoxAux.SelectAll();
+                //richTextBox1.Select(richTextBox1.TextLength, 0);
+                richTextBoxAux.SelectionColor = Color.Black;
+                richTextBoxAux.Select(richTextBoxAux.TextLength, 0);
+                //richTextBoxAux.Select(posicionActual, 0);
+                string find = "";
+                foreach (string word in words)
+                {
+                    
+                    find = word;
+                    if (richTextBoxAux.Text.Contains(find))
+                    {
+                        var matchString = Regex.Escape(find);
+                        foreach (Match match in Regex.Matches(richTextBoxAux.Text, matchString))
+                        {
+                            richTextBoxAux.Select(match.Index, find.Length);
+                            richTextBoxAux.SelectionColor = Color.Blue;
+                            richTextBoxAux.Select(richTextBoxAux.TextLength, 0);
+                            //richTextBoxAux.Select(posicionActual, 0);
+                            richTextBoxAux.SelectionColor = richTextBoxAux.ForeColor;
+                        };
+                    }
+                }
+                find = "//";
+                if (richTextBoxAux.Text.Contains(find))
+                {
+                    var matchString = Regex.Escape(find);
+                    foreach (Match match in Regex.Matches(richTextBoxAux.Text, matchString))
+                    {
+                        string texto = richTextBoxAux.Text;
+                        int busca = 2;
+                        //int otroIndex = richTextBox1.Find(richTextBox1.Text,match.Index,richTextBox1.matchCase);
+                        for(int i = match.Index + 1; texto[i] != '\n' && texto[i] != '\0' && i < texto.Length - 1;i++)
+                        {
+                            busca++;
+                        }
+                        richTextBoxAux.Select(match.Index, busca);
+                        richTextBoxAux.SelectionColor = Color.Green;
+                        //richTextBoxAux.Select(richTextBoxAux.TextLength, 0);
+                        richTextBoxAux.Select(posicionActual, 0);
+                        richTextBoxAux.SelectionColor = richTextBoxAux.ForeColor;
+                    };
+                }
+                richTextBox1 = richTextBoxAux;
+                /*Multiples lineas*/
+                find = "/*";
+                string find2 = "*/";
+                if (richTextBoxAux.Text.Contains(find))
+                {
+                    var matchString = Regex.Escape(find);
+                    foreach (Match match in Regex.Matches(richTextBoxAux.Text, matchString))
+                    {
+                        int ocurrencias1 = match.Length;
+                        ocurrencias1 = ocurrencias1 / 2;
+                        int busca = 1;
+                        int ocurrencias2 = 0;
+                        var matchString2 = Regex.Escape(find2);
+                        foreach (Match match2 in Regex.Matches(richTextBoxAux.Text,matchString2))
+                        {
+                            //int ocurrencias2 = match2.Length / 2;
+                            if (match2.Index > match.Index)
+                            {
+                                busca += match2.Index - match.Index + 1;
+                                ocurrencias2++;
+                                break;
+                            }
+                                
+                        }
+                        string texto = richTextBoxAux.Text;
+                        int i = match.Index - 1;
+                        if(i<0)
+                        {
+                            i = 0;
+                        }
+                        for (; texto[i] != '\0' && i < texto.Length - 1 && ocurrencias1 > ocurrencias2; i++)
+                        {
+                            busca++;
+                        }
+
+                        //string texto = richTextBoxAux.Text;
+
+                        //int otroIndex = richTextBox1.Find(richTextBox1.Text,match.Index,richTextBox1.matchCase);
+                        /*
+                        int i = 9;
+                        var a = texto[i];
+                        var b = texto[i - 1];
+                        for (i = match.Index + 2; (texto[i-2] != '*' && texto[i-1] != '/'/* && texto[i-2] != '*') && texto[i-1] != '\0' && i - 1 < texto.Length - 1; i++)
+                        {
+                            busca++;
+                        }*/
+                        richTextBoxAux.Select(match.Index, busca);
+                        richTextBoxAux.SelectionColor = Color.Green;
+                        richTextBoxAux.Select(richTextBoxAux.TextLength, 0);
+                        //richTextBoxAux.Select(posicionActual, 0);
+                        richTextBoxAux.SelectionColor = richTextBoxAux.ForeColor;
+                    };
+                }
+                richTextBox1 = richTextBoxAux;
+                if(posicionActual >= 0)
+                    richTextBox1.Select(posicionActual, 0);
+
+            }
+            richTextBox1.Focus();
+            //}
+        }
         private void timer1_Tick_1(object sender, EventArgs e)
         {
             //onsole.WriteLine("Hola\n");
@@ -902,6 +1223,11 @@ namespace IDEBeta
         private void cutToolStripMenuItem_Click(object sender, EventArgs e)
         {
             richTextBox1.Cut();
+        }
+
+        private void richTextBox2_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
