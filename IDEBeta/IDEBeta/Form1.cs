@@ -392,7 +392,7 @@ namespace IDEBeta
                                 guardar = false;
                                 estado = Estado.Inicio;
                             }
-                            else if (ch.ToString() == "" || (int)ch == 13)
+                            else if (ch.ToString() == " " || (int)ch == 13 || ch.ToString() == "\t")
                             {
                                 guardar = false;
                                 estado = Estado.Inicio;
@@ -453,15 +453,16 @@ namespace IDEBeta
                             }*/
                             else if (operadores.ContainsKey(ch.ToString()))
                             {
-                                estado = Estado.FinLectura;
+                                estado = Estado.Final;
                                 tokenActual = Token.Operador;
                             }
                             else
                             {
                                 //MessageBox.Show("Entre al ELSE");
-                                guardar = false;
+                                //guardar = false;
                                 estado = Estado.Final;
-                                lexemaActual = "";
+                                tokenActual = Token.Error;
+                                //lexemaActual = "";
                             }
                             break;
                         case Estado.Entero:
@@ -808,9 +809,11 @@ namespace IDEBeta
             guardarResultado(resultado);
             posicion = 0;
             columna = 0;
-            linea = 0;
+            linea = 1;
             ch = 'a';
+            lexico.Clear();
             lexico.Text = resultado;
+            resultado = "";//Limpiamos el resultado
             System.Diagnostics.Debug.WriteLine(resultado);
             if(tokensErrorLexicos.Count > 0)
             {
@@ -963,6 +966,8 @@ namespace IDEBeta
             {
                 saveAsToolStripMenuItem_Click(sender, e);
             }
+            using (var saveFile = new System.IO.StreamWriter(nombreArchivo))
+                saveFile.WriteLine(richTextBox1.Text);
             using (var saveFile = new System.IO.StreamWriter(nombreArchivo))
                 saveFile.WriteLine(richTextBox1.Text);
             cambiosGuardados = true;
