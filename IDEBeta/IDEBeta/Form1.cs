@@ -343,16 +343,6 @@ namespace IDEBeta
             System.IO.StreamReader file = new System.IO.StreamReader(nombreArchivo);
             contenido = file.ReadToEnd();
             file.Close();
-            //MessageBox.Show("Depues de leer el archivo");
-            //MessageBox.Show(contenido.ToString());
-            //MessageBox.Show("Size" + contenido.Length.ToString());
-            /*char ch = 'a';
-            for(int i = 0;i<contenido.Length; i++)
-            {
-                ch = siguienteCaracter(posicion++);
-                MessageBox.Show(((int)ch).ToString());
-            }
-            return;*/
             /*Analisis Lexico*/
             char ch = 'a';
             var contenidoChar = contenido.ToCharArray();
@@ -381,6 +371,7 @@ namespace IDEBeta
                             }
                             else if (char.IsLetter(ch))
                             {
+                                //main
                                 estado = Estado.ID;
                                 tokenActual = Token.ID;
                                 //MessageBox.Show("Entre en es letra");
@@ -392,6 +383,10 @@ namespace IDEBeta
                                 guardar = false;
                                 estado = Estado.Inicio;
                             }
+                            //cout; //86
+
+                            //cout;
+                            //
                             else if (ch.ToString() == " " || (int)ch == 13 || ch.ToString() == "\t")
                             {
                                 guardar = false;
@@ -517,6 +512,7 @@ namespace IDEBeta
                         case Estado.ID:
                             if (!Char.IsLetterOrDigit(ch) && (int)ch != 95)
                             {
+                                //main(
                                 posicion--;
                                 columna--;
                                 guardar = false;
@@ -547,6 +543,7 @@ namespace IDEBeta
                             }
                             estado = Estado.Final;
                             tokenActual = Token.Operador;
+                            guardar = false;
                             posicion--;
                             columna--;
                             break;
@@ -554,6 +551,8 @@ namespace IDEBeta
                             //MessageBox.Show("Entre en comentario de linea");
                             if (ch.ToString() == "\n")
                             {
+                                linea++;
+                                columna = 0;
                                 estado = Estado.Inicio;
                                 guardar = false;
                                 break;
@@ -567,6 +566,11 @@ namespace IDEBeta
                                 estado = Estado.FinComentarioMultiple;
                                 guardar = false;
                                 break;
+                            }
+                            if(ch.ToString() == "\n")
+                            {
+                                linea++;
+                                columna = 0;
                             }
                             guardar = false;
                             break;
@@ -648,6 +652,7 @@ namespace IDEBeta
                             }
                             posicion--;
                             columna--;
+                            guardar = false;
                             tokenActual = Token.Menor;
                             estado = Estado.Final;
                             break;
@@ -660,6 +665,7 @@ namespace IDEBeta
                             }
                             posicion--;
                             columna--;
+                            guardar = false;
                             tokenActual = Token.Mayor;
                             estado = Estado.Final;
                             break;
@@ -672,6 +678,7 @@ namespace IDEBeta
                             }
                             posicion--;
                             columna--;
+                            guardar = false;
                             valorEsperado();
                             tokenActual = Token.Error;
                             estado = Estado.Final;
@@ -728,28 +735,21 @@ namespace IDEBeta
                     });
                     lexemaActual = "";
                 }
-                //MessageBox.Show("Posicion despues de Final " + posicion);
-                //MessageBox.Show("Posicion " + posicion);
-                //resultado += "\n";
-                /*Checar palabras reservadas*/
             }
             //MessageBox.Show("Justo despues de salir");
             //MessageBox.Show(estado.ToString());
             if (estado != Estado.Final && !string.IsNullOrEmpty(lexemaActual))
             {
+                //main
                 if (reservadas.ContainsKey(lexemaActual))
                 {
                     tokenActual = Token.PalabraReservada;
                 }
-                //MessageBox.Show("Entre en IF final");
-                //MessageBox.Show("tokenActual " + tokenActual.ToString());
-                //MessageBox.Show("LexemaActual" + lexemaActual.ToString());
                 resultado += tokenActual.ToString();
                 resultado += "->";
                 resultado += lexemaActual;
                 if (tokenActual == Token.Error)
                 {
-                    //tokensErrorLexicos.Add(new token(tokenActual.ToString(), lexemaActual.ToString() + errorActual));
                     tokensErrorLexicos.Add(new token()
                     {
                         Tipo = tokenActual.ToString(),
@@ -764,14 +764,12 @@ namespace IDEBeta
                     }
                 }
                 resultado += '\n';
-                //tokensLexicos.Add(new token(tokenActual.ToString(), lexemaActual.ToString()));
                 tokensLexicos.Add(new token()
                 {
                     Tipo = tokenActual.ToString(),
                     Lexema = lexemaActual.ToString()
                 });
                 lexemaActual = "";
-                //MessageBox.Show(resultado);
             }
             if (!string.IsNullOrEmpty(lexemaActual))
             {
@@ -780,7 +778,6 @@ namespace IDEBeta
                 resultado += lexemaActual;
                 if (tokenActual == Token.Error)
                 {
-                    //tokensErrorLexicos.Add(new token(tokenActual.ToString(), lexemaActual.ToString() + errorActual));
                     tokensErrorLexicos.Add(new token()
                     {
                         Tipo = tokenActual.ToString(),
@@ -796,8 +793,6 @@ namespace IDEBeta
                     //AGREGAR A TOKENS DE ERRORES, CON MENSAJE
                 }
                 resultado += '\n';
-                //MessageBox.Show(resultado);
-                //tokensLexicos.Add(new token(tokenActual.ToString(), lexemaActual.ToString()));
                 tokensLexicos.Add(new token()
                 {
                     Tipo = tokenActual.ToString(),
@@ -805,7 +800,6 @@ namespace IDEBeta
                 });
                 lexemaActual = "";
             }
-            //MessageBox.Show("Sali del while");
             guardarResultado(resultado);
             posicion = 0;
             columna = 0;
@@ -973,6 +967,41 @@ namespace IDEBeta
             cambiosGuardados = true;
         }
 
+        class comentarios
+        {
+            public int cierre { get; set; }
+            public int apertura { get; set; }
+            /*public token(string tipo, string lexema)
+            {
+                tipo = tipo;
+                lexema = lexema;
+            }*/
+
+            public int Cierre
+            {
+                get
+                {
+                    return cierre;
+                }
+                set
+                {
+                    cierre = value;
+                }
+            }
+
+            public int Apertura
+            {
+                get
+                {
+                    return apertura;
+                }
+                set
+                {
+                    apertura = value;
+                }
+            }
+        }
+
         private void richTextBox1_TextChanged(object sender, EventArgs e)
         {
             int nPos = GetScrollPos(richTextBox1.Handle, (int)ScrollBarType.SbVert);
@@ -1003,7 +1032,6 @@ namespace IDEBeta
                     /*for (int i = 1; i < this.numLines; i++)
                     {
                         //  this.label1.Text += (i).ToString() + "\n";
-
                     }*/
                     
                     if (richTextBox1.Lines.Count()> this.lineas - 1)
@@ -1059,15 +1087,21 @@ namespace IDEBeta
                     richTextBox1.SelectionLength = coincidencia.Value.Length;
                     richTextBox1.SelectionFont = new System.Drawing.Font(richTextBox1.SelectionFont, FontStyle.Bold);
                 }*/
+            string[] test = { "int", "float", "real", "boolean", "if", "else", "then", "while", "until", "main", "end", "do", "cin", "cout" };
             string[] words = { "int ", "float ", "real ", "boolean ", "if ", "else ", "then ", "while ", "until ","main ","end;","do ", "cin ","cout "
             ,"int"+'\n', "float"+'\n', "real"+'\n', "boolean"+'\n', "if"+'\n', "else"+'\n', "then"+'\n', "while"+'\n', "until"+'\n',"main+'\n'","end"+'\n',"do"+'\n', "cin"+'\n',"cout"+'\n'
-            ,"int"+'\t', "float"+'\t', "real"+'\t', "boolean"+'\t', "if"+'\t', "else"+'\t', "then"+'\t', "while"+'\t', "until"+'\t',"main+'\t'","end"+'\t',"do"+'\t', "cin"+'\t',"cout"+'\t' };
+            ,"int"+'\t', "float"+'\t', "real"+'\t', "boolean"+'\t', "if"+'\t', "else"+'\t', "then"+'\t', "while"+'\t', "until"+'\t',"main+'\t'","end"+'\t',"do"+'\t', "cin"+'\t',"cout"+'\t'};
+
+            string[] wordsWithP = { "if(","else{","until(","while(","then(","main(" };
 
             string[] comentarios = { "//", "/*" };
             // Get the current caret position.
             currentLine = richTextBox1.GetLineFromCharIndex(richTextBox1.SelectionStart);
             //currentCol = richTextBox1.SelectionStart - richTextBox1.GetFirstCharIndexFromLine(currentLine);
             int posicionActual = richTextBox1.SelectionStart;// - richTextBox1.GetFirstCharIndexFromLine(currentLine);
+
+            Dictionary<int, comentarios> diccionarioCierres = new Dictionary<int,comentarios> ();
+            Dictionary<int, int> diccionarioAperturas = new Dictionary<int, int>();
 
             if (!string.IsNullOrEmpty(richTextBox1.Text.ToString()))
             {
@@ -1080,10 +1114,70 @@ namespace IDEBeta
                 richTextBoxAux.SelectionColor = Color.Black;
                 richTextBoxAux.Select(richTextBoxAux.TextLength, 0);
                 //richTextBoxAux.Select(posicionActual, 0);
+                string textoBuscador = richTextBoxAux.Text;
+                bool pintaturaya = false;
                 string find = "";
-                foreach (string word in words)
+                foreach (string word in /*words*/test)
                 {
                     
+                    find = word;
+                    if (richTextBoxAux.Text.Contains(find))
+                    {
+                        var matchString = Regex.Escape(find);
+                        foreach (Match match in Regex.Matches(richTextBoxAux.Text, matchString))
+                        {
+                            /*Probando cosas*/
+                            if(match.Index > 0)
+                            {
+                                if(match.Index + find.Length < textoBuscador.Length)
+                                {
+                                    Char ch = textoBuscador[match.Index - 1];
+                                    Char ch2 = textoBuscador[match.Index + find.Length];
+                                    if (!Char.IsLetterOrDigit(textoBuscador[match.Index - 1]) && !Char.IsLetterOrDigit(textoBuscador[match.Index + find.Length]))
+                                    {
+                                        richTextBoxAux.Select(match.Index, find.Length);
+                                        richTextBoxAux.SelectionColor = Color.Blue;
+                                        richTextBoxAux.Select(richTextBoxAux.TextLength, 0);
+                                        //richTextBoxAux.Select(posicionActual, 0);
+                                        richTextBoxAux.SelectionColor = richTextBoxAux.ForeColor;
+                                    }
+                                } 
+                            }
+                            if (match.Index + find.Length <= textoBuscador.Length)
+                            {
+                                Char ch2 = textoBuscador[match.Index + find.Length];
+                                if (!Char.IsLetterOrDigit(textoBuscador[match.Index + find.Length]))
+                                {
+                                    richTextBoxAux.Select(match.Index, find.Length);
+                                    richTextBoxAux.SelectionColor = Color.Blue;
+                                    richTextBoxAux.Select(richTextBoxAux.TextLength, 0);
+                                    //richTextBoxAux.Select(posicionActual, 0);
+                                    richTextBoxAux.SelectionColor = richTextBoxAux.ForeColor;
+                                }
+                            }
+                            /*richTextBoxAux.Select(match.Index, find.Length);
+                            richTextBoxAux.SelectionColor = Color.Blue;
+                            richTextBoxAux.Select(richTextBoxAux.TextLength, 0);
+                            //richTextBoxAux.Select(posicionActual, 0);
+                            richTextBoxAux.SelectionColor = richTextBoxAux.ForeColor;*/
+                        };
+                    }
+                }
+
+                /*Casos especiales*/
+                richTextBox4.Focus();
+                //richTextBoxAux = new RichTextBox();
+                //richTextBoxAux = richTextBox1;
+                /*Cambios para evitar parpadeo*/
+                //richTextBoxAux.SelectAll();
+                //richTextBox1.Select(richTextBox1.TextLength, 0);
+                //richTextBoxAux.SelectionColor = Color.Black;
+                //richTextBoxAux.Select(richTextBoxAux.TextLength, 0);
+                //richTextBoxAux.Select(posicionActual, 0);
+                find = "";
+                foreach (string word in wordsWithP)
+                {
+
                     find = word;
                     if (richTextBoxAux.Text.Contains(find))
                     {
@@ -1098,26 +1192,8 @@ namespace IDEBeta
                         };
                     }
                 }
-                find = "//";
-                if (richTextBoxAux.Text.Contains(find))
-                {
-                    var matchString = Regex.Escape(find);
-                    foreach (Match match in Regex.Matches(richTextBoxAux.Text, matchString))
-                    {
-                        string texto = richTextBoxAux.Text;
-                        int busca = 2;
-                        //int otroIndex = richTextBox1.Find(richTextBox1.Text,match.Index,richTextBox1.matchCase);
-                        for(int i = match.Index + 1; texto[i] != '\n' && texto[i] != '\0' && i < texto.Length - 1;i++)
-                        {
-                            busca++;
-                        }
-                        richTextBoxAux.Select(match.Index, busca);
-                        richTextBoxAux.SelectionColor = Color.Green;
-                        //richTextBoxAux.Select(richTextBoxAux.TextLength, 0);
-                        richTextBoxAux.Select(posicionActual, 0);
-                        richTextBoxAux.SelectionColor = richTextBoxAux.ForeColor;
-                    };
-                }
+                /*caso especial main*/
+
                 richTextBox1 = richTextBoxAux;
                 /*Multiples lineas*/
                 find = "/*";
@@ -1127,49 +1203,100 @@ namespace IDEBeta
                     var matchString = Regex.Escape(find);
                     foreach (Match match in Regex.Matches(richTextBoxAux.Text, matchString))
                     {
-                        int ocurrencias1 = match.Length;
-                        ocurrencias1 = ocurrencias1 / 2;
-                        int busca = 1;
-                        int ocurrencias2 = 0;
-                        var matchString2 = Regex.Escape(find2);
-                        foreach (Match match2 in Regex.Matches(richTextBoxAux.Text,matchString2))
+                        if (!diccionarioCierres.ContainsKey(match.Index))
                         {
-                            //int ocurrencias2 = match2.Length / 2;
-                            if (match2.Index > match.Index)
+                            int ocurrencias1 = match.Length;
+                            ocurrencias1 = ocurrencias1 / 2;
+                            int busca = 1;
+                            int ocurrencias2 = 0;
+                            var matchString2 = Regex.Escape(find2);
+                            foreach (Match match2 in Regex.Matches(richTextBoxAux.Text, matchString2))
                             {
-                                busca += match2.Index - match.Index + 1;
-                                ocurrencias2++;
-                                break;
-                            }
+                                //int ocurrencias2 = match2.Length / 2;
+                                if (match2.Index + 2 > match.Index)
+                                {
+                                    busca += match2.Index - match.Index + 1;
+                                    if(busca >= 4)
+                                    {
+                                        ocurrencias2++;
+                                        if (!diccionarioCierres.ContainsKey(match.Index) && !diccionarioCierres.ContainsKey(match2.Index - 1))
+                                        {
+                                            diccionarioCierres.Add(match2.Index - 1, new comentarios() { Cierre = match2.Index - 1, Apertura = match.Index });
+                                            //diccionarioCierres.Add(match2.Index + 1, match2.Index + 1);
+                                            //diccionarioAperturas.Add(match.Index, match.Index);
+                                        }
+                                            
+                                        break;
+                                    }
+                                    busca = 1;
+                                    
+                                }
                                 
-                        }
-                        string texto = richTextBoxAux.Text;
-                        int i = match.Index - 1;
-                        if(i<0)
-                        {
-                            i = 0;
-                        }
-                        for (; texto[i] != '\0' && i < texto.Length - 1 && ocurrencias1 > ocurrencias2; i++)
-                        {
-                            busca++;
-                        }
 
-                        //string texto = richTextBoxAux.Text;
+                            }
+                            string texto = richTextBoxAux.Text;
+                            int i = match.Index - 1;
+                            if (i < 0)
+                            {
+                                i = 0;
+                            }
+                            for (; texto[i] != '\0' && i < texto.Length - 1 && ocurrencias1 > ocurrencias2; i++)
+                            {
+                                busca++;
+                            }
 
-                        //int otroIndex = richTextBox1.Find(richTextBox1.Text,match.Index,richTextBox1.matchCase);
-                        /*
-                        int i = 9;
-                        var a = texto[i];
-                        var b = texto[i - 1];
-                        for (i = match.Index + 2; (texto[i-2] != '*' && texto[i-1] != '/'/* && texto[i-2] != '*') && texto[i-1] != '\0' && i - 1 < texto.Length - 1; i++)
+                            //string texto = richTextBoxAux.Text;
+
+                            //int otroIndex = richTextBox1.Find(richTextBox1.Text,match.Index,richTextBox1.matchCase);
+                            /*
+                            int i = 9;
+                            var a = texto[i];
+                            var b = texto[i - 1];
+                            for (i = match.Index + 2; (texto[i-2] != '*' && texto[i-1] != '/'/* && texto[i-2] != '*') && texto[i-1] != '\0' && i - 1 < texto.Length - 1; i++)
+                            {
+                                busca++;
+                            }*/
+                            richTextBoxAux.Select(match.Index, busca);
+                            richTextBoxAux.SelectionColor = Color.Green;
+                            richTextBoxAux.Select(richTextBoxAux.TextLength, 0);
+                            //richTextBoxAux.Select(posicionActual, 0);
+                            richTextBoxAux.SelectionColor = richTextBoxAux.ForeColor;
+                        }
+                        
+                    };
+                }
+                
+                find = "//";
+                if (richTextBoxAux.Text.Contains(find))
+                {
+                    var matchString = Regex.Escape(find);
+                    foreach (Match match in Regex.Matches(richTextBoxAux.Text, matchString))
+                    {
+                        /**/
+                        bool banderaSimple = true;
+                        foreach(var pos in diccionarioCierres)
                         {
-                            busca++;
-                        }*/
-                        richTextBoxAux.Select(match.Index, busca);
-                        richTextBoxAux.SelectionColor = Color.Green;
-                        richTextBoxAux.Select(richTextBoxAux.TextLength, 0);
-                        //richTextBoxAux.Select(posicionActual, 0);
-                        richTextBoxAux.SelectionColor = richTextBoxAux.ForeColor;
+                            if (match.Index > pos.Value.apertura && match.Index < pos.Value.cierre)
+                            {
+                                banderaSimple = false;
+                            }
+                        }
+                        if(banderaSimple == true)
+                        {
+                            string texto = richTextBoxAux.Text;
+                            int busca = 2;
+                            //int otroIndex = richTextBox1.Find(richTextBox1.Text,match.Index,richTextBox1.matchCase);
+                            for (int i = match.Index + 1; texto[i] != '\n' && texto[i] != '\0' && i < texto.Length - 1; i++)
+                            {
+                                busca++;
+                            }
+                            richTextBoxAux.Select(match.Index, busca);
+                            richTextBoxAux.SelectionColor = Color.Green;
+                            //richTextBoxAux.Select(richTextBoxAux.TextLength, 0);
+                            richTextBoxAux.Select(posicionActual, 0);
+                            richTextBoxAux.SelectionColor = richTextBoxAux.ForeColor;
+                        }
+                        
                     };
                 }
                 richTextBox1 = richTextBoxAux;

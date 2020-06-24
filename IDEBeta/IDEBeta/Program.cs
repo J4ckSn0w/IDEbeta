@@ -41,12 +41,36 @@ namespace IDEBeta
 
     public class token
     {
-        string tipo;
-        string lexema;
-        public token(string tipo, string lexema)
+        public string tipo { get; set; }
+        public string lexema { get; set; }
+        /*public token(string tipo, string lexema)
         {
-            this.tipo = tipo;
-            this.lexema = lexema;
+            tipo = tipo;
+            lexema = lexema;
+        }*/
+
+        public string Tipo
+        {
+            get
+            {
+                return tipo;
+            }
+            set
+            {
+                tipo = value;
+            }
+        }
+
+        public string Lexema
+        {
+            get
+            {
+                return lexema;
+            }
+            set
+            {
+                lexema = value;
+            }
         }
     }
 
@@ -144,15 +168,16 @@ namespace IDEBeta
             string contenido;
             int posicion = 0;
             string lexemaActual = "";
+            string errorActual = "";
+
+            /*Control de archivo*/
+            int linea = 1;
+            int columna = 0;
             string[] argumentos = Environment.GetCommandLineArgs();
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            //leerArchivo("Prueba.txt");
             if (argumentos.Count() > 1)
             {
-                //MessageBox.Show("Entro a modo consola.");
-                //MessageBox.Show(argumentos.Count().ToString());
-                //MessageBox.Show(argumentos[1].ToString());
                 leerArchivo(argumentos[1]);
                 return;
             }
@@ -163,19 +188,12 @@ namespace IDEBeta
             //Application.Run(new Form1());
             void leerArchivo(string nombreArchivo)
             {
+                List<token> tokensLexicos = new List<token>();
+                List<token> tokensErrorLexicos = new List<token>();
                 //MessageBox.Show("Entre a leer Archivo");                
                 System.IO.StreamReader file = new System.IO.StreamReader(nombreArchivo);
                 contenido = file.ReadToEnd();
                 file.Close();
-                //MessageBox.Show("Depues de leer el archivo");
-                //MessageBox.Show("Size" + contenido.Length.ToString());
-                /*char ch = 'a';
-                for(int i = 0;i<contenido.Length; i++)
-                {
-                    ch = siguienteCaracter(posicion++);
-                    MessageBox.Show(((int)ch).ToString());
-                }
-                return;*/
                 /*Analisis Lexico*/
                 char ch = 'a';
                 var contenidoChar = contenido.ToCharArray();
@@ -189,6 +207,7 @@ namespace IDEBeta
                     {
                         //MessageBox.Show("Token antes de leer el siguiente caracter "+tokenActual.ToString());
                         ch = siguienteCaracter(posicion++);
+                        columna++;
                         guardar = true;
                         //MessageBox.Show(((int)ch).ToString());
                         switch (estado)
@@ -208,7 +227,14 @@ namespace IDEBeta
                                     tokenActual = Token.ID;
                                     //MessageBox.Show("Entre en es letra");
                                 }
-                                else if(ch.ToString() == "\n" || ch.ToString() == "" || (int)ch == 13)
+                                else if(ch.ToString() == "\n")
+                                {
+                                    linea++;
+                                    columna = 0;
+                                    guardar = false;
+                                    estado = Estado.Inicio;
+                                }
+                                else if (ch.ToString() == " " || (int)ch == 13 || ch.ToString() == "\t")
                                 {
                                     guardar = false;
                                     estado = Estado.Inicio;
@@ -269,7 +295,7 @@ namespace IDEBeta
                                 }*/
                                 else if(operadores.ContainsKey(ch.ToString()))
                                 {
-                                    estado = Estado.FinLectura;
+                                    estado = Estado.Final;
                                     tokenActual = Token.Operador;
                                 }
                                 else
@@ -277,7 +303,8 @@ namespace IDEBeta
                                     //MessageBox.Show("Entre al ELSE");
                                     guardar = false;
                                     estado = Estado.Final;
-                                    lexemaActual = "";
+                                    tokenActual = Token.Error;
+                                    //lexemaActual = "";
                                 }
                                 break;
                             case Estado.Entero:
@@ -296,6 +323,7 @@ namespace IDEBeta
                                 {
                                     //MessageBox.Show("Entre en else");
                                     posicion--;
+                                    columna--;
                                     guardar = false;
                                     estado = Estado.Final;
                                     tokenActual = Token.Entero;
@@ -304,8 +332,10 @@ namespace IDEBeta
                             case Estado.Punto:
                                 if (!Char.IsDigit(ch))
                                 {
-                                    //guardar = false;
+                                    guardar = false;
                                     posicion--;
+                                    columna--;
+                                    valorEsperado();
                                     estado = Estado.Final;
                                     tokenActual = Token.Error;
                                     break;
@@ -318,6 +348,7 @@ namespace IDEBeta
                                 if(!Char.IsDigit(ch))
                                 {
                                     posicion--;
+                                    columna--;
                                     guardar = false;
                                     estado = Estado.Final;
                                     tokenActual = Token.Flotante;
@@ -329,6 +360,7 @@ namespace IDEBeta
                                 if(!Char.IsLetterOrDigit(ch) && (int)ch != 95)
                                 {
                                     posicion--;
+                                    columna--;
                                     guardar = false;
                                     estado = Estado.Final;
                                     tokenActual = Token.ID;
@@ -351,17 +383,20 @@ namespace IDEBeta
                                     //lexemaActual.Remove(lexemaActual.Length - 1, 1);
                                     lexemaActual = "";
                                     posicion--;
+                                    columna--;
                                     guardar = false;
                                     break;
                                 }
                                 estado = Estado.Final;
                                 tokenActual = Token.Operador;
                                 posicion--;
+                                columna--;
                                 break;
                             case Estado.ComentarioLinea:
                                 //MessageBox.Show("Entre en comentario de linea");
                                 if(ch.ToString() == "\n")
                                 {
+                                    linea++;
                                     estado = Estado.Inicio;
                                     guardar = false;
                                     break;
@@ -375,6 +410,10 @@ namespace IDEBeta
                                     estado = Estado.FinComentarioMultiple;
                                     guardar = false;
                                     break;
+                                }
+                                if(ch.ToString() == "\n")
+                                {
+                                    linea++;
                                 }
                                 guardar = false;
                                 break;
@@ -400,6 +439,9 @@ namespace IDEBeta
                                     tokenActual = Token.Decremento;
                                     break;
                                 }
+                                guardar = false;
+                                posicion--;
+                                columna--;
                                 tokenActual = Token.Operador;
                                 break;
                             case Estado.Mas:
@@ -409,6 +451,9 @@ namespace IDEBeta
                                     tokenActual = Token.Incremento;
                                     break;
                                 }
+                                guardar = false;
+                                posicion--;
+                                columna--;
                                 tokenActual = Token.Operador;
                                 break;
                             case Estado.Asignacion:
@@ -419,6 +464,10 @@ namespace IDEBeta
                                     tokenActual = Token.Asignacion;
                                     break;
                                 }
+                                posicion--;
+                                columna--;
+                                guardar = false;
+                                valorEsperado();
                                 estado = Estado.Final;
                                 tokenActual = Token.Error;
                                 break;
@@ -431,6 +480,9 @@ namespace IDEBeta
                                     break;
                                 }
                                 posicion--;
+                                columna--;
+                                guardar = false;
+                                valorEsperado();
                                 estado = Estado.Final;
                                 tokenActual = Token.Error;
                                 break;
@@ -442,6 +494,8 @@ namespace IDEBeta
                                     break;
                                 }
                                 posicion--;
+                                columna--;
+                                guardar = false;
                                 tokenActual = Token.Menor;
                                 estado = Estado.Final;
                                 break;
@@ -453,6 +507,8 @@ namespace IDEBeta
                                     break;
                                 }
                                 posicion--;
+                                columna--;
+                                guardar = false;
                                 tokenActual = Token.Mayor;
                                 estado = Estado.Final;
                                 break;
@@ -464,6 +520,8 @@ namespace IDEBeta
                                     break;
                                 }
                                 posicion--;
+                                columna--;
+                                valorEsperado();
                                 tokenActual = Token.Error;
                                 estado = Estado.Final;
                                 break;
@@ -493,10 +551,31 @@ namespace IDEBeta
                         resultado += tokenActual.ToString();
                         resultado += "->";
                         resultado += lexemaActual;
+                        if (tokenActual == Token.Error)
+                        {
+                            tokensErrorLexicos.Add(new token()
+                            {
+                                Tipo = tokenActual.ToString(),
+                                Lexema = lexemaActual.ToString() + errorActual + " en linea " + linea + " columna " + columna
+                            });
+                            resultado += " en linea " + linea + " columna " + columna;
+                            //AGREGAR A TOKENS DE ERRORES, CON MENSAJE
+                            if (!string.IsNullOrEmpty(errorActual))
+                            {
+                                resultado += errorActual;
+                                errorActual = "";
+                            }
+                        }
                         resultado += '\n';
                         //MessageBox.Show(resultado);
                         /*Guardamos el token en el array de tokens*/
-                        tokens.Add(new token(tokenActual.ToString(),lexemaActual.ToString()));
+                        //tokens.Add(new token(tokenActual.ToString(),lexemaActual.ToString()));
+                        //lexemaActual = "";
+                        tokensLexicos.Add(new token()
+                        {
+                            Tipo = tokenActual.ToString(),
+                            Lexema = lexemaActual.ToString()
+                        });
                         lexemaActual = "";
                     }
                     //MessageBox.Show("Posicion despues de Final " + posicion);
@@ -518,11 +597,29 @@ namespace IDEBeta
                     resultado += tokenActual.ToString();
                     resultado += "->";
                     resultado += lexemaActual;
-                    if(tokenActual == Token.Error)
+                    if (tokenActual == Token.Error)
                     {
-                        //resultado += " en linea " + linea + " columna " + columna;
+                        //tokensErrorLexicos.Add(new token(tokenActual.ToString(), lexemaActual.ToString() + errorActual));
+                        tokensErrorLexicos.Add(new token()
+                        {
+                            Tipo = tokenActual.ToString(),
+                            Lexema = lexemaActual.ToString() + errorActual + " en linea " + linea + " columna " + columna
+                        });
+                        resultado += " en linea " + linea + " columna " + columna;
+                        //AGREGAR A TOKENS DE ERRORES, CON MENSAJE
+                        if (!string.IsNullOrEmpty(errorActual))
+                        {
+                            resultado += errorActual;
+                            errorActual = "";
+                        }
                     }
                     resultado += '\n';
+                    tokensLexicos.Add(new token()
+                    {
+                        Tipo = tokenActual.ToString(),
+                        Lexema = lexemaActual.ToString()
+                    });
+                    lexemaActual = "";
                     //MessageBox.Show(resultado);
                 }
                 if (!string.IsNullOrEmpty(lexemaActual))
@@ -530,8 +627,30 @@ namespace IDEBeta
                     resultado += tokenActual.ToString();
                     resultado += "->";
                     resultado += lexemaActual;
+                    if (tokenActual == Token.Error)
+                    {
+                        //tokensErrorLexicos.Add(new token(tokenActual.ToString(), lexemaActual.ToString() + errorActual));
+                        tokensErrorLexicos.Add(new token()
+                        {
+                            Tipo = tokenActual.ToString(),
+                            Lexema = lexemaActual.ToString() + errorActual + " en linea " + linea + " columna " + columna
+                        });
+                        resultado += " en linea " + linea + " columna " + columna;
+                        if (!string.IsNullOrEmpty(errorActual))
+                        {
+                            resultado += errorActual;
+                            errorActual = "";
+                        }
+
+                        //AGREGAR A TOKENS DE ERRORES, CON MENSAJE
+                    }
                     resultado += '\n';
                     //MessageBox.Show(resultado);
+                    tokensLexicos.Add(new token()
+                    {
+                        Tipo = tokenActual.ToString(),
+                        Lexema = lexemaActual.ToString()
+                    });
                     lexemaActual = "";
                 }
                 //MessageBox.Show("Sali del while");
@@ -568,6 +687,24 @@ namespace IDEBeta
                     //MessageBox.Show("Despues de escribir el contenido");
                 }
                 //MessageBox.Show("Terminar Leer Archivos");
+            }
+            void valorEsperado()
+            {
+                switch (estado)
+                {
+                    case Estado.Punto:
+                        errorActual = " Se esperaba un digito";
+                        break;
+                    case Estado.Asignacion:
+                        errorActual = " Se esperaba un =";
+                        break;
+                    case Estado.Comparacion:
+                        errorActual = " Se esperaba un =";
+                        break;
+                    case Estado.Diferente:
+                        errorActual = " Se esperaba un =";
+                        break;
+                }
             }
         }
     }
