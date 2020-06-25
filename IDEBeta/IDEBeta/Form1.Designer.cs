@@ -75,6 +75,7 @@
             this.tabPage8 = new System.Windows.Forms.TabPage();
             this.tabPage9 = new System.Windows.Forms.TabPage();
             this.tabPage10 = new System.Windows.Forms.TabPage();
+            this.treeView1 = new System.Windows.Forms.TreeView();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
@@ -84,6 +85,7 @@
             this.splitContainer1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.tabControl2.SuspendLayout();
             this.tabPage5.SuspendLayout();
             this.SuspendLayout();
@@ -408,9 +410,11 @@
             this.lexico.Size = new System.Drawing.Size(502, 486);
             this.lexico.TabIndex = 0;
             this.lexico.Text = "";
+            this.lexico.TextChanged += new System.EventHandler(this.lexico_TextChanged);
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.treeView1);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
@@ -524,6 +528,14 @@
             this.tabPage10.Text = "Errores Codigo Intermedio";
             this.tabPage10.UseVisualStyleBackColor = true;
             // 
+            // treeView1
+            // 
+            this.treeView1.Location = new System.Drawing.Point(7, 7);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(494, 473);
+            this.treeView1.TabIndex = 0;
+            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -555,6 +567,7 @@
             this.splitContainer1.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
             this.tabControl2.ResumeLayout(false);
             this.tabPage5.ResumeLayout(false);
             this.ResumeLayout(false);
@@ -610,6 +623,7 @@
         private System.Windows.Forms.TabPage tabPage10;
         private System.Windows.Forms.RichTextBox lexico;
         private System.Windows.Forms.RichTextBox erroresLexicos;
+        private System.Windows.Forms.TreeView treeView1;
     }
 }
 

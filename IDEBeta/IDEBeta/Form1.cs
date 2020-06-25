@@ -706,9 +706,12 @@ namespace IDEBeta
                     {
                         tokenActual = Token.PalabraReservada;
                     }
-                    resultado += tokenActual.ToString();
-                    resultado += "->";
-                    resultado += lexemaActual;
+                    //Forma de guardarlos antes de solo guardar tokens validos en el resultado
+                    /*
+                        resultado += tokenActual.ToString();
+                        resultado += "->";
+                        resultado += lexemaActual;
+                    */
                     if (tokenActual == Token.Error)
                     {
                         tokensErrorLexicos.Add(new token()
@@ -716,24 +719,31 @@ namespace IDEBeta
                             Tipo = tokenActual.ToString(),
                             Lexema = lexemaActual.ToString() + errorActual + " en linea " + linea + " columna " + columna
                         });
-                        resultado += " en linea " + linea + " columna " + columna;
+                        //resultado += " en linea " + linea + " columna " + columna;
                         //AGREGAR A TOKENS DE ERRORES, CON MENSAJE
-                        if (!string.IsNullOrEmpty(errorActual))
-                        {
-                            resultado += errorActual;
+                        //if (!string.IsNullOrEmpty(errorActual))
+                        //{
+                        //    resultado += errorActual;
                             errorActual = "";
-                        }
+                            lexemaActual = "";
+                        //}
                     }
-                    resultado += '\n';
-                    //MessageBox.Show(resultado);
-                    /*Guardamos el token en el array de tokens*/
-                    //tokensLexicos.Add(new token(tokenActual.ToString(), lexemaActual.ToString()));
-                    tokensLexicos.Add(new token()
+                    else
                     {
-                        Tipo = tokenActual.ToString(),
-                        Lexema = lexemaActual.ToString()
-                    });
-                    lexemaActual = "";
+                        resultado += tokenActual.ToString();
+                        resultado += "->";
+                        resultado += lexemaActual;
+                        resultado += '\n';
+                        //MessageBox.Show(resultado);
+                        /*Guardamos el token en el array de tokens*/
+                        //tokensLexicos.Add(new token(tokenActual.ToString(), lexemaActual.ToString()));
+                        tokensLexicos.Add(new token()
+                        {
+                            Tipo = tokenActual.ToString(),
+                            Lexema = lexemaActual.ToString()
+                        });
+                        lexemaActual = "";
+                    }
                 }
             }
             //MessageBox.Show("Justo despues de salir");
@@ -745,9 +755,12 @@ namespace IDEBeta
                 {
                     tokenActual = Token.PalabraReservada;
                 }
+                //Forma de guardarlos antes de solo guardar tokens validos en el resultado
+                /*
                 resultado += tokenActual.ToString();
                 resultado += "->";
                 resultado += lexemaActual;
+                */
                 if (tokenActual == Token.Error)
                 {
                     tokensErrorLexicos.Add(new token()
@@ -755,27 +768,37 @@ namespace IDEBeta
                         Tipo = tokenActual.ToString(),
                         Lexema = lexemaActual.ToString() + errorActual + " en linea " + linea + " columna " + columna
                     });
-                    resultado += " en linea " + linea + " columna " + columna;
+                    //resultado += " en linea " + linea + " columna " + columna;
                     //AGREGAR A TOKENS DE ERRORES, CON MENSAJE
-                    if (!string.IsNullOrEmpty(errorActual))
-                    {
-                        resultado += errorActual;
+                    //if (!string.IsNullOrEmpty(errorActual))
+                    //{
+                    //    resultado += errorActual;
                         errorActual = "";
-                    }
+                        lexemaActual = "";
+                    //}
                 }
-                resultado += '\n';
-                tokensLexicos.Add(new token()
+                else
                 {
-                    Tipo = tokenActual.ToString(),
-                    Lexema = lexemaActual.ToString()
-                });
-                lexemaActual = "";
+                    resultado += tokenActual.ToString();
+                    resultado += "->";
+                    resultado += lexemaActual;
+                    resultado += '\n';
+                    tokensLexicos.Add(new token()
+                    {
+                        Tipo = tokenActual.ToString(),
+                        Lexema = lexemaActual.ToString()
+                    });
+                    lexemaActual = "";
+                }
             }
             if (!string.IsNullOrEmpty(lexemaActual))
             {
+                //Forma de guardarlos antes de solo guardar tokens validos en el resultado
+                /*
                 resultado += tokenActual.ToString();
                 resultado += "->";
                 resultado += lexemaActual;
+                */
                 if (tokenActual == Token.Error)
                 {
                     tokensErrorLexicos.Add(new token()
@@ -783,22 +806,32 @@ namespace IDEBeta
                         Tipo = tokenActual.ToString(),
                         Lexema = lexemaActual.ToString() + errorActual + " en linea " + linea + " columna " + columna
                     });
-                    resultado += " en linea " + linea + " columna " + columna;
-                    if(!string.IsNullOrEmpty(errorActual))
-                    {
-                        resultado += errorActual;
+                    //resultado += " en linea " + linea + " columna " + columna;
+                    //if (!string.IsNullOrEmpty(errorActual))
+                    //{
+                    //    resultado += errorActual;
                         errorActual = "";
-                    }
-                    
+                    lexemaActual = "";
+                    //}
+
                     //AGREGAR A TOKENS DE ERRORES, CON MENSAJE
+
+                    //resultado += '\n';
                 }
-                resultado += '\n';
-                tokensLexicos.Add(new token()
+                //resultado += '\n';
+                else
                 {
-                    Tipo = tokenActual.ToString(),
-                    Lexema = lexemaActual.ToString()
-                });
-                lexemaActual = "";
+                    resultado += tokenActual.ToString();
+                    resultado += "->";
+                    resultado += lexemaActual;
+                    resultado += '\n';
+                    tokensLexicos.Add(new token()
+                    {
+                        Tipo = tokenActual.ToString(),
+                        Lexema = lexemaActual.ToString()
+                    });
+                    lexemaActual = "";
+                }
             }
             guardarResultado(resultado);
             posicion = 0;
@@ -909,7 +942,7 @@ namespace IDEBeta
             richTextBox1.Text = r.ToString();
             nombreArchivo = openFileDialog1.FileName;
             //Console.WriteLine(nombreArchivo);*/
-            string contentFile;
+                string contentFile;
 
             //Se muestra el explorador de archivos para buscar el archivo
             openFileDialog1.ShowDialog();
@@ -1358,6 +1391,16 @@ namespace IDEBeta
         }
 
         private void richTextBox2_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void treeView1_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+
+        }
+
+        private void lexico_TextChanged(object sender, EventArgs e)
         {
 
         }
