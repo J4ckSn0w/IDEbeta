@@ -58,6 +58,9 @@ namespace IDEBeta
         {
             public string tipo { get; set; }
             public string lexema { get; set; }
+            public int fila { get; set; }
+            public int columna { get; set; }
+
             /*public token(string tipo, string lexema)
             {
                 tipo = tipo;
@@ -85,6 +88,30 @@ namespace IDEBeta
                 set
                 {
                     lexema = value;
+                }
+            }
+
+            public int Fila
+            {
+                get
+                {
+                    return fila;
+                }
+                set
+                {
+                    fila = value;
+                }
+            }
+
+            public int Columna
+            {
+                get
+                {
+                    return columna;
+                }
+                set
+                {
+                    columna = value;
                 }
             }
         }
@@ -302,11 +329,15 @@ namespace IDEBeta
         int linea = 1;
         int columna = 0;
         string resultado = "";
+
+        List<token> tokensLexicos = new List<token>();
+        List<token> tokensErrorLexicos = new List<token>();
+
         void leerArchivo(string nombreArchivo)
         {
             /*array de tokens*/
-            List<token> tokensLexicos = new List<token>();
-            List<token> tokensErrorLexicos = new List<token>();
+            //List<token> tokensLexicos = new List<token>();
+            //List<token> tokensErrorLexicos = new List<token>();
             /*Diccionario Palabras Reservadas*/
             //main, if, then, else, end, do, while, cin, cout, real, int, boolean
             Dictionary<string, palabraReservada> reservadas = new Dictionary<string, palabraReservada>();
@@ -717,7 +748,9 @@ namespace IDEBeta
                         tokensErrorLexicos.Add(new token()
                         {
                             Tipo = tokenActual.ToString(),
-                            Lexema = lexemaActual.ToString() + errorActual + " en linea " + linea + " columna " + columna
+                            Lexema = lexemaActual.ToString() + errorActual + " en linea " + linea + " columna " + columna,
+                            Fila = linea,
+                            Columna = columna
                         });
                         //resultado += " en linea " + linea + " columna " + columna;
                         //AGREGAR A TOKENS DE ERRORES, CON MENSAJE
@@ -740,7 +773,9 @@ namespace IDEBeta
                         tokensLexicos.Add(new token()
                         {
                             Tipo = tokenActual.ToString(),
-                            Lexema = lexemaActual.ToString()
+                            Lexema = lexemaActual.ToString(),
+                            Fila = linea,
+                            Columna = columna
                         });
                         lexemaActual = "";
                     }
@@ -766,7 +801,9 @@ namespace IDEBeta
                     tokensErrorLexicos.Add(new token()
                     {
                         Tipo = tokenActual.ToString(),
-                        Lexema = lexemaActual.ToString() + errorActual + " en linea " + linea + " columna " + columna
+                        Lexema = lexemaActual.ToString() + errorActual + " en linea " + linea + " columna " + columna,
+                        Fila = linea,
+                        Columna = columna
                     });
                     //resultado += " en linea " + linea + " columna " + columna;
                     //AGREGAR A TOKENS DE ERRORES, CON MENSAJE
@@ -786,7 +823,9 @@ namespace IDEBeta
                     tokensLexicos.Add(new token()
                     {
                         Tipo = tokenActual.ToString(),
-                        Lexema = lexemaActual.ToString()
+                        Lexema = lexemaActual.ToString(),
+                        Fila = linea,
+                        Columna = columna
                     });
                     lexemaActual = "";
                 }
@@ -804,7 +843,9 @@ namespace IDEBeta
                     tokensErrorLexicos.Add(new token()
                     {
                         Tipo = tokenActual.ToString(),
-                        Lexema = lexemaActual.ToString() + errorActual + " en linea " + linea + " columna " + columna
+                        Lexema = lexemaActual.ToString() + errorActual + " en linea " + linea + " columna " + columna,
+                        Fila = linea,
+                        Columna = columna
                     });
                     //resultado += " en linea " + linea + " columna " + columna;
                     //if (!string.IsNullOrEmpty(errorActual))
@@ -828,7 +869,9 @@ namespace IDEBeta
                     tokensLexicos.Add(new token()
                     {
                         Tipo = tokenActual.ToString(),
-                        Lexema = lexemaActual.ToString()
+                        Lexema = lexemaActual.ToString(),
+                        Fila = linea,
+                        Columna = columna
                     });
                     lexemaActual = "";
                 }
@@ -851,6 +894,12 @@ namespace IDEBeta
                 }
                 erroresLexicos.Text = lexicos;
             }
+            //Imprimir tokens
+            //foreach(var tok in tokensLexicos)
+            //{
+            //    Console.WriteLine("Fila: " + tok.fila + "Columna:" + tok.columna + "\n");
+            //}
+            
         }
         void valorEsperado()
         {
@@ -906,6 +955,16 @@ namespace IDEBeta
             }
             //MessageBox.Show("Terminar Leer Archivos");
         }
+
+        /// <summary>
+        /// Sintactico, funciones sintacticas
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+
+
+
+
         private void menuStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
@@ -1404,5 +1463,251 @@ namespace IDEBeta
         {
 
         }
+        //Sintactico
+
+        public class nodo
+        {
+            public double valor;
+            public string nombre;
+            public nodo[] hijos = new nodo[3];
+            public nodo izquierdo;
+            public nodo derecho;
+
+            public double Valor
+            {
+                get
+                {
+                    return valor;
+                }
+                set
+                {
+                    valor = value;
+                }
+            }
+
+            public string Nombre
+            {
+                get
+                {
+                    return nombre;
+                }
+                set
+                {
+                    nombre = value;
+                }
+            }
+
+            public nodo[] Hijos
+            {
+                get
+                {
+                    return hijos;
+                }
+                set
+                {
+                    hijos = value;
+                }
+            }
+        }
+
+        token tokenSintactico = new token();
+        int posicionToken = 0;
+        public void nextToken()
+        {
+            if(posicionToken < tokensLexicos.Count)
+            {
+                tokenSintactico = tokensLexicos[posicionToken];
+                posicionToken++;
+            }
+        }
+
+        public TreeNode verArbol(nodo arbol,TreeView tree)
+        {
+            if(arbol != null)
+            {
+                TreeNode nuevoT = new TreeNode();
+                tree.BeginUpdate();
+                //if (tree.Nodes.Count == 0)
+                //    tree.Nodes.Add(arbol.Nombre.ToString());
+                //else
+                //    tree.Nodes[0].Nodes.Add(arbol.Nombre.ToString());
+                //Probando cosas
+                if(arbol.Nombre == "factor")
+                {
+                    string x = arbol.Valor.ToString();
+                    //nuevoT.Nodes.Add("Nuevo");
+                    nuevoT.Text = arbol.Nombre.ToString();
+                    //nuevoT.Name = arbol.Nombre.ToString();
+                    nuevoT.Nodes.Add(x.ToString());
+                    return nuevoT;
+                }
+                nuevoT.Text = arbol.Nombre.ToString();
+                //nuevoT.Name = arbol.Nombre.ToString();
+                //nuevoT.Nodes.Add(arbol.Nombre.ToString());
+                //nuevoT.Nodes[0].Nodes.Add(verArbol(arbol.Hijos[0], tree));
+                //nuevoT.Nodes[0].Nodes.Add(verArbol(arbol.Hijos[1], tree));
+                nuevoT.Nodes.Add(verArbol(arbol.Hijos[0], tree));
+                nuevoT.Nodes.Add(verArbol(arbol.Hijos[1], tree));
+                //treeView1.Nodes[0].Nodes;
+                Console.WriteLine("Nodo -> " + arbol.Nombre + "\n");
+                Console.WriteLine("Valor -> " + arbol.Valor + "\n");
+                //tree = verArbol(arbol.Hijos[0], tree);
+                //tree = verArbol(arbol.Hijos[1], tree);
+                tree.EndUpdate();
+                return nuevoT;
+            }
+            return null;
+        }
+
+        private void toolStripMenuItem6_Click(object sender, EventArgs e)
+        {
+            nextToken();
+            nodo raiz = null;
+
+            raiz = exp();
+            //Console.WriteLine(resultado + "\n");
+            var t = verArbol(raiz,treeView1);
+            treeView1.Nodes.Add(t);
+        }
+        
+        public nodo exp()
+        {
+            nodo nuevo;
+            nodo temp = new nodo();
+            temp = term();
+            while(tokenSintactico.lexema == "+" || tokenSintactico.lexema == "-")
+            {
+                switch (tokenSintactico.lexema)
+                {
+                    case "+":
+                        nuevo = new nodo();
+                        nuevo.Nombre = tokenSintactico.lexema.ToString();
+                        nextToken();
+                        //nuevo.Hijos[0] = temp;
+                        nuevo.Hijos[0] = temp;
+                        nuevo.Valor = temp.Valor;
+                        nuevo.Hijos[1] = term();
+                        nuevo.Valor += nuevo.Hijos[1].Valor; 
+                        temp = nuevo;
+                        
+                        break;
+
+                    case "-":
+                        nuevo = new nodo();
+                        nuevo.Nombre = tokenSintactico.lexema.ToString();
+                        nextToken();
+                        nuevo.Hijos[0] = temp;
+                        nuevo.Valor = temp.Valor;
+                        nuevo.Hijos[1] = term();
+                        nuevo.Valor -= nuevo.Hijos[1].Valor;
+                        temp = nuevo;
+
+                        break;
+
+                    default:
+                        Console.WriteLine("Nothing");
+                        break;
+                }
+            }
+            return temp;
+            //return 1;
+        }
+
+        public nodo term()
+        {
+            nodo nuevo = new nodo();
+            nodo temp = factor();
+            while(tokenSintactico.lexema == "*" || tokenSintactico.lexema == "/" || tokenSintactico.lexema == "%")
+            {
+                switch (tokenSintactico.lexema)
+                {
+                    case "*":
+                        nuevo = new nodo();
+                        nuevo.Nombre = tokenSintactico.lexema.ToString();
+                        nextToken();
+                        nuevo.Hijos[0] = temp;
+                        nuevo.Valor = temp.Valor;
+                        nuevo.Hijos[1] = factor();
+                        nuevo.Valor *= nuevo.Hijos[1].Valor;
+                        temp = nuevo;
+
+                        break;
+                    case "/":
+                        nuevo = new nodo();
+                        nuevo.Nombre = tokenSintactico.lexema.ToString();
+                        nextToken();
+                        nuevo.Hijos[0] = temp;
+                        nuevo.Valor = temp.Valor;
+                        nuevo.Hijos[1] = factor();
+                        nuevo.Valor /= nuevo.Hijos[1].Valor;
+                        temp = nuevo;
+
+                        break;
+                    case "%":
+                        nuevo = new nodo();
+                        nuevo.Nombre = tokenSintactico.lexema.ToString();
+                        nextToken();
+                        nuevo.Hijos[0] = temp;
+                        nuevo.Valor = temp.Valor;
+                        nuevo.Hijos[1] = factor();
+                        nuevo.Valor %= nuevo.Hijos[1].Valor;
+                        temp = nuevo;
+
+                        break;
+                    default:
+                        Console.WriteLine("Nothing");
+                        break;
+                }
+            }
+            return temp;
+            //return 1;
+        }
+
+        public nodo factor()
+        {
+            nodo nuevo = new nodo();
+            nodo temp = fin();
+            while(tokenSintactico.lexema == "^")
+            {
+                switch(tokenSintactico.lexema)
+                {
+                    case"^":
+                        nuevo = new nodo();
+                        nuevo.Nombre = tokenSintactico.lexema.ToString();
+                        nextToken();
+                        nuevo.Hijos[0] = temp;
+                        nuevo.Valor = temp.Valor;
+                        nuevo.Hijos[1] = fin();
+                        nuevo.Valor = Math.Pow(nuevo.Valor,nuevo.Hijos[1].Valor);
+                        temp = nuevo;
+
+                        break;
+                }
+            }
+            return temp;
+            //return 1;
+        }
+
+        public nodo fin()
+        {
+            nodo temp = new nodo();
+            if(tokenSintactico.lexema == "(")
+            {
+                nextToken();
+                temp = exp();
+                nextToken();
+            }
+            else
+            {
+                int x = 0;
+
+                //Int32.TryParse(tokenSintactico.lexema, out x);
+                temp.Nombre = "factor";
+                temp.Valor = Convert.ToDouble(tokenSintactico.lexema);
+                nextToken();
+            }
+            return temp;
+        }
+
     }
 }

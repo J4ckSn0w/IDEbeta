@@ -65,6 +65,7 @@
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.lexico = new System.Windows.Forms.RichTextBox();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.treeView1 = new System.Windows.Forms.TreeView();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.tabPage4 = new System.Windows.Forms.TabPage();
             this.tabPage6 = new System.Windows.Forms.TabPage();
@@ -75,7 +76,6 @@
             this.tabPage8 = new System.Windows.Forms.TabPage();
             this.tabPage9 = new System.Windows.Forms.TabPage();
             this.tabPage10 = new System.Windows.Forms.TabPage();
-            this.treeView1 = new System.Windows.Forms.TreeView();
             this.contextMenuStrip1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.menuStrip2.SuspendLayout();
@@ -308,6 +308,7 @@
             this.toolStripMenuItem6.Name = "toolStripMenuItem6";
             this.toolStripMenuItem6.Size = new System.Drawing.Size(71, 26);
             this.toolStripMenuItem6.Text = "Sintactico";
+            this.toolStripMenuItem6.Click += new System.EventHandler(this.toolStripMenuItem6_Click);
             // 
             // toolStripMenuItem7
             // 
@@ -423,6 +424,14 @@
             this.tabPage2.Text = "Sintactico";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // treeView1
+            // 
+            this.treeView1.Location = new System.Drawing.Point(7, 7);
+            this.treeView1.Name = "treeView1";
+            this.treeView1.Size = new System.Drawing.Size(494, 473);
+            this.treeView1.TabIndex = 0;
+            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
+            // 
             // tabPage3
             // 
             this.tabPage3.Location = new System.Drawing.Point(4, 22);
@@ -527,14 +536,6 @@
             this.tabPage10.TabIndex = 4;
             this.tabPage10.Text = "Errores Codigo Intermedio";
             this.tabPage10.UseVisualStyleBackColor = true;
-            // 
-            // treeView1
-            // 
-            this.treeView1.Location = new System.Drawing.Point(7, 7);
-            this.treeView1.Name = "treeView1";
-            this.treeView1.Size = new System.Drawing.Size(494, 473);
-            this.treeView1.TabIndex = 0;
-            this.treeView1.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView1_AfterSelect);
             // 
             // Form1
             // 
