@@ -1623,11 +1623,40 @@ namespace IDEBeta
 
         public nodo programa()
         {
+            //Inicio del programa, leemos main seguido de {}
+            //nextToken();
             nodo t = new nodo();
-            t.Nombre = "main";
-            t.Hijos.Add(lista_declaracion());
+            if(tokenSintactico.lexema == "main")
+            {
+                t.Nombre = tokenSintactico.lexema;
+                nextToken();
+                if(tokenSintactico.lexema == "{")
+                {
+                    nextToken();
+                    t.Hijos.Add(lista_declaracion());
+                    t.Hijos.Add(secuencia_sent());
+                    if(tokenSintactico.lexema == "}")
+                    {
+                        return t;
+                    }
+                    else
+                    {
+                        //Error, debe de terminar con un }
+                    }
+                }
+                else
+                {
+                    //Erro, despues de main se necesita '{'
+                }
+            }
+            else
+            {
+                //Error, se necesita iniciar con main
+            }
+            //t.Nombre = "main";
+            //t.Hijos.Add(lista_declaracion());
             //t.Hijos[1] = secuencia_sent();
-            t.Hijos.Add(secuencia_sent());
+            //t.Hijos.Add(secuencia_sent());
             return t;
         }
 
