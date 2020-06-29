@@ -1667,7 +1667,7 @@ namespace IDEBeta
             temp.Nombre = "sentencias";
             nodo t = secuencia();
             nodo p = t;
-            while(tokenSintactico.lexema != "end" && tokenSintactico.lexema != "else" && tokenSintactico.lexema != "until" && tokenSintactico.lexema != "EOF")
+            while(tokenSintactico.lexema != "end" && tokenSintactico.lexema != "else" && tokenSintactico.lexema != "until" && tokenSintactico.lexema != "EOF" && tokenSintactico.lexema != "}")
             {
                 nodo q = new nodo();
                 if(tokenSintactico.lexema == ";")
@@ -1700,6 +1700,9 @@ namespace IDEBeta
                 case "cout":
                     temp = cout();
                     break;
+                case "while":
+                    temp = while_();
+                    break;
                 default:
                     if(tokenSintactico.Tipo == "ID")
                     {
@@ -1710,6 +1713,46 @@ namespace IDEBeta
                         //error
                     }
                     break;
+            }
+            return temp;
+        }
+
+        public nodo while_()
+        {
+            nodo temp = new nodo();
+            if (tokenSintactico.lexema == "while")
+            {
+                temp.Nombre = tokenSintactico.lexema;
+                nextToken();
+                temp.Hijos.Add(exp());
+                if(tokenSintactico.lexema == "{")
+                {
+                    temp.Hijos.Add(bloque());
+                }
+                else
+                {
+                    //error
+                }
+            }
+            return temp;
+        }
+
+        public nodo bloque()
+        {
+            nodo temp = new nodo();
+            if(tokenSintactico.lexema == "{")
+            {
+                nextToken();
+                temp = secuencia_sent();
+                if(tokenSintactico.lexema == "}")
+                {
+                    nextToken();
+                }
+                else
+                {
+                    //error
+                    return null;
+                }
             }
             return temp;
         }
@@ -1784,18 +1827,59 @@ namespace IDEBeta
         public nodo asignar()
         {
             nodo nuevo = new nodo();
+            nodo temp = new nodo();
             if(tokenSintactico.Tipo == "ID")
             {
-                nuevo.Nombre = tokenSintactico.lexema;
+                temp.Nombre = tokenSintactico.lexema;
                 nextToken();
                 if(tokenSintactico.lexema == ":=")
                 {
+                    nuevo.Nombre = tokenSintactico.lexema;
                     nextToken();
+                    //nuevo = new nodo();
+                    
+                    nuevo.Hijos.Add(temp);
                     //nuevo.Hijos[0] = exp();
                     nuevo.Hijos.Add(exp());
                 }
                 else
                 {
+                    if(tokenSintactico.lexema == "++" || tokenSintactico.lexema == "--")
+                    {
+                        switch(tokenSintactico.lexema)
+                        {
+                            case "++":
+                                nuevo = new nodo();
+                                nuevo.Nombre = ":=";
+                                nuevo.Hijos.Add(temp);
+                                nodo suma = new nodo();
+                                suma.Nombre = "+";
+                                nodo derecha = new nodo();
+                                derecha.Nombre = "1";
+                                derecha.Valor = 1;
+                                suma.Hijos.Add(temp);
+                                suma.Hijos.Add(derecha);
+                                nuevo.Hijos.Add(suma);
+                                nextToken();
+                                temp = nuevo;
+                                break;
+                            case "--":
+                                nuevo = new nodo();
+                                nuevo.Nombre = ":=";
+                                nuevo.Hijos.Add(temp);
+                                suma = new nodo();
+                                suma.Nombre = "-";
+                                derecha = new nodo();
+                                derecha.Nombre = "1";
+                                derecha.Valor = 1;
+                                suma.Hijos.Add(temp);
+                                suma.Hijos.Add(derecha);
+                                nuevo.Hijos.Add(suma);
+                                nextToken();
+                                temp = nuevo;
+                                break;
+                        }
+                    }
                     //Error
                 }
             }
@@ -1834,7 +1918,7 @@ namespace IDEBeta
             nodo nuevo;
             nodo temp = new nodo();
             temp = exp_simple();
-            while (tokenSintactico.lexema == ">" || tokenSintactico.lexema == "<" || tokenSintactico.lexema == "<=" || tokenSintactico.lexema == "=>" || tokenSintactico.lexema == "!=" || tokenSintactico.lexema == "==")
+            while (tokenSintactico.lexema == ">" || tokenSintactico.lexema == "<" || tokenSintactico.lexema == "<=" || tokenSintactico.lexema == ">=" || tokenSintactico.lexema == "!=" || tokenSintactico.lexema == "==")
             {
                 nuevo = new nodo();
                 nuevo.Nombre = tokenSintactico.lexema.ToString();
@@ -1890,10 +1974,6 @@ namespace IDEBeta
                         temp = nuevo;
 
                         break;
-                    case "++":
-
-                        break;
-
                     default:
                         Console.WriteLine("Nothing");
                         break;
