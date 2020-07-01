@@ -1772,7 +1772,7 @@ namespace IDEBeta
         {
             nodo temp = new nodo();
             temp.Nombre = "sentencias";
-            nodo t = secuencia();
+            nodo t = null;//secuencia();
             nodo p = t;
             
             while(tokenSintactico.lexema != "end" && tokenSintactico.lexema != "else" && tokenSintactico.lexema != "until" && tokenSintactico.lexema != "EOF" && tokenSintactico.lexema != "}")
@@ -1946,6 +1946,7 @@ namespace IDEBeta
                 //if(a>2 then
                 //cout X;
             }
+            lineaError = 0;
             return temp;
         }
 
