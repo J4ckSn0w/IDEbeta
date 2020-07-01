@@ -1620,6 +1620,7 @@ namespace IDEBeta
             if(t != null)
                 treeView1.Nodes.Add(t);
             treeView1.EndUpdate();
+            treeView1.ExpandAll();
             posicionToken = 0;
         }
 
@@ -1643,9 +1644,17 @@ namespace IDEBeta
         public void error(string c)
         {
             Console.WriteLine("Error de sintaxis {0}", c);
-
+            /*if(tokenSintactico.Columna == 0)
+            {
+                if(tokenSintactico.Fila > 0)
+                {
+                    erroresSintacticos += "Error de sintaxis, se esperaba " + c + " en Linea: " + tokenSintactico.Fila + ", " + tokenSintactico.Columna + "\n";
+                    tokenSintactico.lexema = "ERROR";
+                }
+            }*/
             erroresSintacticos += "Error de sintaxis, se esperaba " + c +" en Linea: " + tokenSintactico.Fila+", "+ tokenSintactico.Columna + "\n";
-
+            //tokenSintactico.lexema = "ERROR";
+            lineaError = tokenSintactico.Fila;
         }
 
         public void match(string expectedToken)
@@ -1733,6 +1742,7 @@ namespace IDEBeta
                 primero.Tipo = "ID";
                 otro.Hijos.Add(primero);
                 nextToken();
+                var posAnterior = new token();
                 while (tokenSintactico.lexema != ";" && tokenSintactico.lexema == ",")
                 {
                     nextToken();
@@ -1740,32 +1750,58 @@ namespace IDEBeta
                     variable.Nombre = tokenSintactico.lexema;
                     variable.Tipo = "ID";
                     otro.Hijos.Add(variable);
+                    posAnterior = tokenSintactico;
                     nextToken();
                 }
-                nextToken();
+                //nextToken();
+                if(tokenSintactico.lexema == ";")
+                {
+                    match_nuevo(";");
+                }
+                else
+                {
+                    erroresSintacticos += "Error de sintaxis, se esperaba ; en Linea: " + posAnterior.Fila + ", " + Convert.ToInt32(posAnterior.Columna) + "\n";
+                }
+                
                 nuevo.Hijos.Add(otro);
             }
             return nuevo;
         }
-
+        int lineaError = 0;
         public nodo secuencia_sent()
         {
             nodo temp = new nodo();
             temp.Nombre = "sentencias";
             nodo t = secuencia();
             nodo p = t;
+            
             while(tokenSintactico.lexema != "end" && tokenSintactico.lexema != "else" && tokenSintactico.lexema != "until" && tokenSintactico.lexema != "EOF" && tokenSintactico.lexema != "}")
             {
                 nodo q = new nodo();
                 //if(tokenSintactico.lexema == ";")
                 //{
-                match(";");
+                if(tokenSintactico.lexema == "ERROR" || lineaError != 0)
+                {
+                    //lineaError = tokenSintactico.Fila;
+                    while(lineaError == tokenSintactico.Fila)
+                    {
+                        nextToken();
+                    }
+                    lineaError = 0;
+                }
+                else
+                {
+                    lineaError = 0;
                     //nextToken();
-                    if(t!= null)
+                    if (t != null)
+                    {
                         temp.Hijos.Add(t);
+                    }
                     q = secuencia();
                     temp.Hijos.Add(q);
                     t = null;
+                }
+                //lineaError = 0;
                 //}
                 //else
                 //{
@@ -1782,16 +1818,19 @@ namespace IDEBeta
             switch(tokenSintactico.lexema)
             {
                 case "if":
-                    temp = if_stmt();
+                    temp = ifPrueba();
                     break;
                 case "do":
                     temp = repeat();
+                    match_nuevo(";");
                     break;
                 case "cin":
                     temp = cin();
+                    match_nuevo(";");
                     break;
                 case "cout":
                     temp = cout();
+                    match_nuevo(";");
                     break;
                 case "while":
                     temp = while_();
@@ -1803,16 +1842,19 @@ namespace IDEBeta
                     if(tokenSintactico.Tipo == "ID")//a++;  a:=2;
                     {
                         temp = asignar();
+                        if(lineaError == 0)
+                            match_nuevo(";");
                     }
-                    else if(tokenSintactico.lexema != "else" && tokenSintactico.lexema != "end" && tokenSintactico.lexema != "until" && tokenSintactico.lexema != "else" && tokenSintactico.lexema != "}")
-                    {
-                        erroresSintacticos += "Error de sintaxis, token inesperado:" + tokenSintactico.lexema + " en Linea: " + tokenSintactico.Fila + ", " + tokenSintactico.Columna + "\n";
-                        nextToken();
+                    //else if(tokenSintactico.lexema != "else" && tokenSintactico.lexema != "end" && tokenSintactico.lexema != "until" && tokenSintactico.lexema != "}")
+                    //{
+                        //erroresSintacticos += "Error de sintaxis, token inesperado:" + tokenSintactico.lexema + " en Linea: " + tokenSintactico.Fila + ", " + tokenSintactico.Columna + "\n";
+                    //    lineaError = tokenSintactico.Fila;
+                        //nextToken();
                         //error , token no valido en Linea: Col: 'Unexpected'
-                    }
+                    //}
                     else
                     {
-
+                        lineaError = tokenSintactico.Fila;
                     }
                     break;
             }
@@ -1825,8 +1867,13 @@ namespace IDEBeta
             if (tokenSintactico.lexema == "while")
             {
                 temp.Nombre = tokenSintactico.lexema;
-                nextToken();
+                //nextToken();
+                //while(a+b
+                //{
+                match("while");
+                match("(");
                 temp.Hijos.Add(exp());
+                match(")");
                 if(tokenSintactico.lexema == "{")
                 {
                     temp.Hijos.Add(bloque());
@@ -1861,6 +1908,82 @@ namespace IDEBeta
             temp = secuencia_sent();
             match("}");
             return temp;
+        }
+
+        public nodo ifPrueba()
+        {
+            nodo temp = new nodo();
+            temp.Nombre = tokenSintactico.lexema;
+            match("if");
+            temp.Hijos.Add(exp_then());
+            match_nuevo("then");
+            temp.Hijos.Add(secuencia_sent());
+            if (tokenSintactico.lexema == "else")
+            {
+                nodo else_ = new nodo();
+                else_.Nombre = tokenSintactico.lexema;
+                nextToken();
+                //temp.Hijos[2] = secuencia_sent();
+                else_.Hijos.Add(secuencia_sent());
+                temp.Hijos.Add(else_);
+            }
+            match_nuevo("end");
+            return temp;
+        }
+
+        public nodo exp_then()
+        {
+            var bandera = true;
+            nodo temp = new nodo();
+            while (bandera == true)
+            {
+                if (!match_nuevo("("))
+                    break;
+                temp = exp();
+                if (!match_nuevo(")"))
+                    break;
+                bandera = false;
+                //if(a>2 then
+                //cout X;
+            }
+            return temp;
+        }
+
+        public bool match_nuevo(string token)
+        {
+            if (tokenSintactico == null)
+            {
+                error(token);
+                return false;
+            }
+            else if (tokenSintactico.lexema.Equals(token))
+            {
+                getToken();
+                return true;
+            }
+            // token = getchar();//treae el toke de la entrada estandar, en el copilador lo traera de su lexico
+            else
+            {
+                error_prueba(token);
+                return false;
+            }
+            return true;
+        }
+
+        public void error_prueba(string c)
+        {
+            Console.WriteLine("Error de sintaxis {0}", c);
+            /*if(tokenSintactico.Columna == 0)
+            {
+                if(tokenSintactico.Fila > 0)
+                {
+                    erroresSintacticos += "Error de sintaxis, se esperaba " + c + " en Linea: " + tokenSintactico.Fila + ", " + tokenSintactico.Columna + "\n";
+                    tokenSintactico.lexema = "ERROR";
+                }
+            }*/
+            erroresSintacticos += "Error de sintaxis, se esperaba " + c + " en Linea: " + tokenSintactico.Fila + ", " + tokenSintactico.Columna + "\n";
+            lineaError = tokenSintactico.Fila;
+            //tokenSintactico.lexema = "ERROR";
         }
 
         public nodo if_stmt()
@@ -2002,17 +2125,23 @@ namespace IDEBeta
                             break;
                     }
                 }
-                else //if (tokenSintactico.lexema == ":=")
-                 {
-                    match(":=");
-                    nuevo.Nombre = tokenSintactico.lexema;
+                else if(tokenSintactico.lexema == ":=")
+                    {
+                        nuevo.Nombre = tokenSintactico.lexema;
+                        match_nuevo(":=");
+                        nuevo.Hijos.Add(temp);
+                        //nuevo.Hijos[0] = exp();
+                        nuevo.Hijos.Add(exp());
+                    }
+                    else
+                    {
+                        //match_nuevo(":=");
+                        lineaError = tokenSintactico.Fila;
+                        erroresSintacticos += "Error de sintaxis, token desconocido " + tokenSintactico.lexema + " en Linea: " + tokenSintactico.Fila + ", " + tokenSintactico.Columna + "\n";
+                    }
+                    //nuevo.Nombre = tokenSintactico.lexema;
                     //nextToken();
                     //nuevo = new nodo();
-
-                    nuevo.Hijos.Add(temp);
-                    //nuevo.Hijos[0] = exp();
-                    nuevo.Hijos.Add(exp());
-                }
                 //Error
             }
             else
@@ -2031,8 +2160,13 @@ namespace IDEBeta
                 nuevo.Nombre = tokenSintactico.lexema.ToString();
                 nextToken();
                 if(tokenSintactico.Tipo == "ID")
+                {
+                    nodo salida = new nodo();
+                    salida.Nombre = tokenSintactico.lexema.ToString();
                     nuevo.Atributo = tokenSintactico.lexema.ToString();
-                nextToken();
+                    nuevo.Hijos.Add(salida);
+                    nextToken();
+                }
             }
             return nuevo;
         }
@@ -2238,7 +2372,8 @@ namespace IDEBeta
             }
             else
             {
-                erroresSintacticos += "Error de sintaxis, error inesperado en Linea: " + tokenSintactico.Fila + ", " + tokenSintactico.Columna + "\n";
+                lineaError = tokenSintactico.Fila;
+                //erroresSintacticos += "Error de sintaxis, error inesperado en Linea: " + tokenSintactico.Fila + ", " + tokenSintactico.Columna + "\n";
             }
             return temp;
         }
