@@ -274,16 +274,16 @@ namespace IDEBeta
         {
             ImageList imageList = new ImageList();
             DialogResult respuesta;
-            if(cambiosGuardados == false)
+            if (cambiosGuardados == false)
             {
-                respuesta = MessageBox.Show("Desea guardar los cambios en el archivo?","Guardar",MessageBoxButtons.YesNoCancel);
-                if(respuesta == DialogResult.Yes)
+                respuesta = MessageBox.Show("Desea guardar los cambios en el archivo?", "Guardar", MessageBoxButtons.YesNoCancel);
+                if (respuesta == DialogResult.Yes)
                 {
                     saveToolStripMenuItem_Click(sender, e);
                     nombreArchivo = "";
                     richTextBox1.Clear();
                 }
-                if(respuesta == DialogResult.No)
+                if (respuesta == DialogResult.No)
                 {
                     nombreArchivo = "";
                     richTextBox1.Clear();
@@ -299,7 +299,7 @@ namespace IDEBeta
 
         private void toolStripMenuItem1_Click(object sender, EventArgs e)//Lexico
         {
-            if(cambiosGuardados == true)
+            if (cambiosGuardados == true)
             {
                 leerArchivo(nombreArchivo);
             }
@@ -308,12 +308,12 @@ namespace IDEBeta
                 MessageBox.Show("Primero debe guardar los cambios");
             }
         }
-            /*Estados*/
-            /*0 = inicial
-             1 = Entero
-             2 = Punto
-             3 = Flotante
-             10 = finalizo*/
+        /*Estados*/
+        /*0 = inicial
+         1 = Entero
+         2 = Punto
+         3 = Flotante
+         10 = finalizo*/
         Estado estado = Estado.Inicio;
         Token tokenActual = Token.Entero;
         Token tokenAnterior = Token.Entero;
@@ -409,7 +409,7 @@ namespace IDEBeta
                                 tokenActual = Token.ID;
                                 //MessageBox.Show("Entre en es letra");
                             }
-                            else if(ch.ToString() == "\n")
+                            else if (ch.ToString() == "\n")
                             {
                                 linea++;
                                 columna = 0;
@@ -600,7 +600,7 @@ namespace IDEBeta
                                 guardar = false;
                                 break;
                             }
-                            if(ch.ToString() == "\n")
+                            if (ch.ToString() == "\n")
                             {
                                 linea++;
                                 columna = 0;
@@ -759,8 +759,8 @@ namespace IDEBeta
                         //if (!string.IsNullOrEmpty(errorActual))
                         //{
                         //    resultado += errorActual;
-                            errorActual = "";
-                            lexemaActual = "";
+                        errorActual = "";
+                        lexemaActual = "";
                         //}
                     }
                     else
@@ -812,8 +812,8 @@ namespace IDEBeta
                     //if (!string.IsNullOrEmpty(errorActual))
                     //{
                     //    resultado += errorActual;
-                        errorActual = "";
-                        lexemaActual = "";
+                    errorActual = "";
+                    lexemaActual = "";
                     //}
                 }
                 else
@@ -853,7 +853,7 @@ namespace IDEBeta
                     //if (!string.IsNullOrEmpty(errorActual))
                     //{
                     //    resultado += errorActual;
-                        errorActual = "";
+                    errorActual = "";
                     lexemaActual = "";
                     //}
 
@@ -887,10 +887,10 @@ namespace IDEBeta
             lexico.Text = resultado;
             resultado = "";//Limpiamos el resultado
             System.Diagnostics.Debug.WriteLine(resultado);
-            if(tokensErrorLexicos.Count > 0)
+            if (tokensErrorLexicos.Count > 0)
             {
                 string lexicos = "";
-                foreach(var error in tokensErrorLexicos)
+                foreach (var error in tokensErrorLexicos)
                 {
                     lexicos += error.Lexema + "\n";
                 }
@@ -901,11 +901,11 @@ namespace IDEBeta
             //{
             //    Console.WriteLine("Fila: " + tok.fila + "Columna:" + tok.columna + "\n");
             //}
-            
+
         }
         void valorEsperado()
         {
-            switch(estado)
+            switch (estado)
             {
                 case Estado.Punto:
                     errorActual = " Se esperaba un digito";
@@ -1003,7 +1003,7 @@ namespace IDEBeta
             richTextBox1.Text = r.ToString();
             nombreArchivo = openFileDialog1.FileName;
             //Console.WriteLine(nombreArchivo);*/
-                string contentFile;
+            string contentFile;
 
             //Se muestra el explorador de archivos para buscar el archivo
             openFileDialog1.ShowDialog();
@@ -1050,7 +1050,7 @@ namespace IDEBeta
 
         private void saveToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(string.IsNullOrEmpty(nombreArchivo))
+            if (string.IsNullOrEmpty(nombreArchivo))
             {
                 saveAsToolStripMenuItem_Click(sender, e);
             }
@@ -1113,54 +1113,54 @@ namespace IDEBeta
                 richTextBox4.Text = nueva.ToString();
                 lineas = richTextBox1.Lines.Length;
                 /*Probando cosas*/
-                
+
             SendMessage(richTextBox4.Handle, (int)Message.WM_VSCROLL, new IntPtr(wParam), new IntPtr(0));
             /*Probando cosas
         }*/
 
             //Codigo de Fuantos
             if (richTextBox1.Lines.Count() != lineas - 1)
+            {
+                //this.numLines = richTextBox1.Lines.Count();
+                //this.label1.Text = "";
+                /*for (int i = 1; i < this.numLines; i++)
                 {
-                    //this.numLines = richTextBox1.Lines.Count();
-                    //this.label1.Text = "";
-                    /*for (int i = 1; i < this.numLines; i++)
+                    //  this.label1.Text += (i).ToString() + "\n";
+                }*/
+
+                if (richTextBox1.Lines.Count() > this.lineas - 1)
+                {
+                    while (richTextBox1.Lines.Count() > this.lineas - 1)
                     {
-                        //  this.label1.Text += (i).ToString() + "\n";
-                    }*/
-                    
-                    if (richTextBox1.Lines.Count()> this.lineas - 1)
-                    {
-                        while(richTextBox1.Lines.Count() > this.lineas - 1)
-                        {
-                            var li = this.lineas.ToString();
-                            
+                        var li = this.lineas.ToString();
+
                         richTextBox4.AppendText(li + Environment.NewLine);
-                            this.lineas++;
-                        } 
+                        this.lineas++;
                     }
-
-                    if (richTextBox1.Lines.Count() < this.lineas - 1)
-                    {
-                        while (richTextBox1.Lines.Count() < this.lineas - 1)
-                        {
-                            List<string> myList = richTextBox4.Lines.ToList();
-                            if (myList.Count > 0)
-                            {
-                                myList.RemoveAt(myList.Count - 2);
-                                richTextBox4.Lines = myList.ToArray();
-                                richTextBox4.Refresh();
-                                this.lineas--;
-                                if(this.lineas == 0)
-                                {
-                                    this.lineas++;
-                                }
-                            }
-
-                        }
-                    }
-                    //this.lineas = richTextBox1.Lines.Count();
                 }
-                cambiosGuardados = false;
+
+                if (richTextBox1.Lines.Count() < this.lineas - 1)
+                {
+                    while (richTextBox1.Lines.Count() < this.lineas - 1)
+                    {
+                        List<string> myList = richTextBox4.Lines.ToList();
+                        if (myList.Count > 0)
+                        {
+                            myList.RemoveAt(myList.Count - 2);
+                            richTextBox4.Lines = myList.ToArray();
+                            richTextBox4.Refresh();
+                            this.lineas--;
+                            if (this.lineas == 0)
+                            {
+                                this.lineas++;
+                            }
+                        }
+
+                    }
+                }
+                //this.lineas = richTextBox1.Lines.Count();
+            }
+            cambiosGuardados = false;
             /*Pintar palabras reservadas en richtext*/
             //richTextBox1.Handle.ToInt32;
             //richTextBox1.SelectionStart = 0;
@@ -1186,7 +1186,7 @@ namespace IDEBeta
             ,"int"+'\n', "float"+'\n', "real"+'\n', "boolean"+'\n', "if"+'\n', "else"+'\n', "then"+'\n', "while"+'\n', "until"+'\n',"main+'\n'","end"+'\n',"do"+'\n', "cin"+'\n',"cout"+'\n'
             ,"int"+'\t', "float"+'\t', "real"+'\t', "boolean"+'\t', "if"+'\t', "else"+'\t', "then"+'\t', "while"+'\t', "until"+'\t',"main+'\t'","end"+'\t',"do"+'\t', "cin"+'\t',"cout"+'\t'};
 
-            string[] wordsWithP = { "if(","else{","until(","while(","then(","main(" };
+            string[] wordsWithP = { "if(", "else{", "until(", "while(", "then(", "main(" };
 
             string[] comentarios = { "//", "/*" };
             // Get the current caret position.
@@ -1194,14 +1194,14 @@ namespace IDEBeta
             //currentCol = richTextBox1.SelectionStart - richTextBox1.GetFirstCharIndexFromLine(currentLine);
             int posicionActual = richTextBox1.SelectionStart;// - richTextBox1.GetFirstCharIndexFromLine(currentLine);
 
-            Dictionary<int, comentarios> diccionarioCierres = new Dictionary<int,comentarios> ();
+            Dictionary<int, comentarios> diccionarioCierres = new Dictionary<int, comentarios>();
             Dictionary<int, int> diccionarioAperturas = new Dictionary<int, int>();
 
             if (!string.IsNullOrEmpty(richTextBox1.Text.ToString()))
             {
                 richTextBox4.Focus();
                 var richTextBoxAux = new RichTextBox();
-                richTextBoxAux= richTextBox1;
+                richTextBoxAux = richTextBox1;
                 /*Cambios para evitar parpadeo*/
                 richTextBoxAux.SelectAll();
                 //richTextBox1.Select(richTextBox1.TextLength, 0);
@@ -1213,7 +1213,7 @@ namespace IDEBeta
                 string find = "";
                 foreach (string word in /*words*/test)
                 {
-                    
+
                     find = word;
                     if (richTextBoxAux.Text.Contains(find))
                     {
@@ -1221,9 +1221,9 @@ namespace IDEBeta
                         foreach (Match match in Regex.Matches(richTextBoxAux.Text, matchString))
                         {
                             /*Probando cosas*/
-                            if(match.Index > 0)
+                            if (match.Index > 0)
                             {
-                                if(match.Index + find.Length < textoBuscador.Length)
+                                if (match.Index + find.Length < textoBuscador.Length)
                                 {
                                     Char ch = textoBuscador[match.Index - 1];
                                     Char ch2 = textoBuscador[match.Index + find.Length];
@@ -1235,7 +1235,7 @@ namespace IDEBeta
                                         //richTextBoxAux.Select(posicionActual, 0);
                                         richTextBoxAux.SelectionColor = richTextBoxAux.ForeColor;
                                     }
-                                } 
+                                }
                             }
                             if (match.Index + find.Length <= textoBuscador.Length - 1)
                             {
@@ -1310,7 +1310,7 @@ namespace IDEBeta
                                 if (match2.Index + 2 > match.Index)
                                 {
                                     busca += match2.Index - match.Index + 1;
-                                    if(busca >= 4)
+                                    if (busca >= 4)
                                     {
                                         ocurrencias2++;
                                         if (!diccionarioCierres.ContainsKey(match.Index) && !diccionarioCierres.ContainsKey(match2.Index - 1))
@@ -1319,13 +1319,13 @@ namespace IDEBeta
                                             //diccionarioCierres.Add(match2.Index + 1, match2.Index + 1);
                                             //diccionarioAperturas.Add(match.Index, match.Index);
                                         }
-                                            
+
                                         break;
                                     }
                                     busca = 1;
-                                    
+
                                 }
-                                
+
 
                             }
                             string texto = richTextBoxAux.Text;
@@ -1356,10 +1356,10 @@ namespace IDEBeta
                             //richTextBoxAux.Select(posicionActual, 0);
                             richTextBoxAux.SelectionColor = richTextBoxAux.ForeColor;
                         }
-                        
+
                     };
                 }
-                
+
                 find = "//";
                 if (richTextBoxAux.Text.Contains(find))
                 {
@@ -1368,14 +1368,14 @@ namespace IDEBeta
                     {
                         /**/
                         bool banderaSimple = true;
-                        foreach(var pos in diccionarioCierres)
+                        foreach (var pos in diccionarioCierres)
                         {
                             if (match.Index > pos.Value.apertura && match.Index < pos.Value.cierre)
                             {
                                 banderaSimple = false;
                             }
                         }
-                        if(banderaSimple == true)
+                        if (banderaSimple == true)
                         {
                             string texto = richTextBoxAux.Text;
                             int busca = 2;
@@ -1390,11 +1390,11 @@ namespace IDEBeta
                             richTextBoxAux.Select(posicionActual, 0);
                             richTextBoxAux.SelectionColor = richTextBoxAux.ForeColor;
                         }
-                        
+
                     };
                 }
                 richTextBox1 = richTextBoxAux;
-                if(posicionActual >= 0)
+                if (posicionActual >= 0)
                     richTextBox1.Select(posicionActual, 0);
 
             }
@@ -1473,11 +1473,15 @@ namespace IDEBeta
             public string nombre;
             public string tipo;
             public string atributo;
-            public double atributoDoule;
+            public double atributoDouble;
+            public string tipoNodo { get; set; }
+            public string tipoVariable { get; set; }
             //public nodo[] hijos = new nodo[3];
             public List<nodo> hijos = new List<nodo>();
             public nodo izquierdo;
             public nodo derecho;
+
+            public  int linea { get; set; }
 
             public string Atributo
             {
@@ -1546,7 +1550,7 @@ namespace IDEBeta
         public void nextToken()
         {
             //match
-            if(posicionToken < tokensLexicos.Count)
+            if (posicionToken < tokensLexicos.Count)
             {
                 tokenSintactico = tokensLexicos[posicionToken];
                 posicionToken++;
@@ -1557,51 +1561,28 @@ namespace IDEBeta
             }
         }
 
-        public TreeNode verArbol(nodo arbol,TreeView tree)
+        public TreeNode verArbol(nodo arbol, TreeView tree)
         {
-            if(arbol != null)
+            if (arbol != null)
             {
                 TreeNode nuevoT = new TreeNode();
-                
-                //if (tree.Nodes.Count == 0)
-                //    tree.Nodes.Add(arbol.Nombre.ToString());
-                //else
-                //    tree.Nodes[0].Nodes.Add(arbol.Nombre.ToString());
-                //Probando cosas
-                if(arbol.Nombre == null)
+                if (arbol.Nombre == null)
                 {
                     return null;
                 }
-                if(arbol.Tipo == "factor" || arbol.Tipo == "ID")
+                if (arbol.Tipo == "factor" || arbol.Tipo == "ID")
                 {
                     string x = arbol.Valor.ToString();
-                    //nuevoT.Nodes.Add("Nuevo");
                     nuevoT.Text = arbol.Nombre.ToString();
-                    //nuevoT.Name = arbol.Nombre.ToString();
-                    //nuevoT.Nodes.Add(x.ToString());
                     return nuevoT;
                 }
                 nuevoT.Text = arbol.Nombre.ToString();
-                //nuevoT.Name = arbol.Nombre.ToString();
-                //nuevoT.Nodes.Add(arbol.Nombre.ToString());
-                //nuevoT.Nodes[0].Nodes.Add(verArbol(arbol.Hijos[0], tree));
-                //nuevoT.Nodes[0].Nodes.Add(verArbol(arbol.Hijos[1], tree));
                 var hijos = arbol.Hijos.Count;
-                for(int i = 0; i< hijos; i++)
+                for (int i = 0; i < hijos; i++)
                 {
                     if (arbol.Hijos[i] != null && arbol.Hijos[i].nombre != null)
                         nuevoT.Nodes.Add(verArbol(arbol.Hijos[i], tree));
                 }
-                //if(arbol.Hijos[0] != null)
-                //    nuevoT.Nodes.Add(verArbol(arbol.Hijos[0], tree));
-                //if (arbol.Hijos[1] != null)
-                //    nuevoT.Nodes.Add(verArbol(arbol.Hijos[1], tree));
-                //treeView1.Nodes[0].Nodes;
-                Console.WriteLine("Nodo -> " + arbol.Nombre + "\n");
-                Console.WriteLine("Valor -> " + arbol.Valor + "\n");
-                //tree = verArbol(arbol.Hijos[0], tree);
-                //tree = verArbol(arbol.Hijos[1], tree);
-                
                 return nuevoT;
             }
             return null;
@@ -1613,11 +1594,12 @@ namespace IDEBeta
             nodo raiz = null;
             //2+3+5*10
             raiz = programa();
+            raizSemantica = raiz;
             //Console.WriteLine(resultado + "\n");
             treeView1.Nodes.Clear();
             treeView1.BeginUpdate();
-            var t = verArbol(raiz,treeView1);
-            if(t != null)
+            var t = verArbol(raiz, treeView1);
+            if (t != null)
                 treeView1.Nodes.Add(t);
             treeView1.EndUpdate();
             treeView1.ExpandAll();
@@ -1652,7 +1634,7 @@ namespace IDEBeta
                     tokenSintactico.lexema = "ERROR";
                 }
             }*/
-            erroresSintacticos += "Error de sintaxis, se esperaba " + c +" en Linea: " + tokenSintactico.Fila+", "+ tokenSintactico.Columna + "\n";
+            erroresSintacticos += "Error de sintaxis, se esperaba " + c + " en Linea: " + tokenSintactico.Fila + ", " + tokenSintactico.Columna + "\n";
             //tokenSintactico.lexema = "ERROR";
             lineaError = tokenSintactico.Fila;
         }
@@ -1689,29 +1671,29 @@ namespace IDEBeta
             {
                 t.Nombre = "raiz auxiliar";
             }
-                //nextToken();
-                match("main");
-                match("{");
-                //if(tokenSintactico.lexema == "{")
-                //{
-                    //nextToken();
-                    t.Hijos.Add(lista_declaracion());
-                    t.Hijos.Add(secuencia_sent());
-                match("}");
-                //return t;
-                    /*if(tokenSintactico.lexema == "}")
-                    {
-                        return t;
-                    }
-                    else
-                    {
-                        //Error, debe de terminar con un }
-                    }*/
-                //}
-                //else
-                //{
-                    //Erro, despues de main se necesita '{'
-                //}
+            //nextToken();
+            match("main");
+            match("{");
+            //if(tokenSintactico.lexema == "{")
+            //{
+            //nextToken();
+            t.Hijos.Add(lista_declaracion());
+            t.Hijos.Add(secuencia_sent());
+            match("}");
+            //return t;
+            /*if(tokenSintactico.lexema == "}")
+            {
+                return t;
+            }
+            else
+            {
+                //Error, debe de terminar con un }
+            }*/
+            //}
+            //else
+            //{
+            //Erro, despues de main se necesita '{'
+            //}
             //}
             //else
             //{
@@ -1731,15 +1713,23 @@ namespace IDEBeta
         {
             nodo nuevo = new nodo();
             nuevo.Nombre = "declaracion";
-            while(tokenSintactico.lexema == "int" || tokenSintactico.lexema == "float" || tokenSintactico.lexema == "boolean" )
+            nuevo.tipoNodo = "declaracion";
+            while (tokenSintactico.lexema == "int" || tokenSintactico.lexema == "float" || tokenSintactico.lexema == "boolean")
             {
                 nodo otro = new nodo();
                 otro.Nombre = tokenSintactico.lexema;
                 otro.Tipo = "variable";
+                otro.linea = tokenSintactico.Fila;
+                //Agregando para el semantico
+                otro.tipoNodo = tokenSintactico.lexema;
                 nextToken();
                 nodo primero = new nodo();
                 primero.Nombre = tokenSintactico.lexema;
                 primero.Tipo = "ID";
+                primero.linea = tokenSintactico.Fila;
+                //Propagacion de tipo
+                primero.tipoNodo = otro.tipoNodo;
+                primero.tipoVariable = otro.tipoNodo;
                 otro.Hijos.Add(primero);
                 nextToken();
                 var posAnterior = new token();
@@ -1749,12 +1739,15 @@ namespace IDEBeta
                     nodo variable = new nodo();
                     variable.Nombre = tokenSintactico.lexema;
                     variable.Tipo = "ID";
+                    variable.linea = tokenSintactico.Fila;
+                    variable.tipoNodo = otro.tipoNodo;
+                    variable.tipoVariable = otro.tipoNodo;
                     otro.Hijos.Add(variable);
                     posAnterior = tokenSintactico;
                     nextToken();
                 }
                 //nextToken();
-                if(tokenSintactico.lexema == ";")
+                if (tokenSintactico.lexema == ";")
                 {
                     match_nuevo(";");
                 }
@@ -1762,7 +1755,6 @@ namespace IDEBeta
                 {
                     erroresSintacticos += "Error de sintaxis, se esperaba ; en Linea: " + posAnterior.Fila + ", " + Convert.ToInt32(posAnterior.Columna) + "\n";
                 }
-                
                 nuevo.Hijos.Add(otro);
             }
             return nuevo;
@@ -1774,16 +1766,16 @@ namespace IDEBeta
             temp.Nombre = "sentencias";
             nodo t = null;//secuencia();
             nodo p = t;
-            
-            while(tokenSintactico.lexema != "end" && tokenSintactico.lexema != "else" && tokenSintactico.lexema != "until" && tokenSintactico.lexema != "EOF" && tokenSintactico.lexema != "}")
+
+            while (tokenSintactico.lexema != "end" && tokenSintactico.lexema != "else" && tokenSintactico.lexema != "until" && tokenSintactico.lexema != "EOF" && tokenSintactico.lexema != "}")
             {
                 nodo q = new nodo();
                 //if(tokenSintactico.lexema == ";")
                 //{
-                if(tokenSintactico.lexema == "ERROR" || lineaError != 0)
+                if (tokenSintactico.lexema == "ERROR" || lineaError != 0)
                 {
                     //lineaError = tokenSintactico.Fila;
-                    while(lineaError == tokenSintactico.Fila)
+                    while (lineaError == tokenSintactico.Fila)
                     {
                         nextToken();
                     }
@@ -1815,7 +1807,7 @@ namespace IDEBeta
         public nodo secuencia()
         {
             nodo temp = new nodo();
-            switch(tokenSintactico.lexema)
+            switch (tokenSintactico.lexema)
             {
                 case "if":
                     temp = ifPrueba();
@@ -1839,18 +1831,18 @@ namespace IDEBeta
                     temp = bloque();
                     break;
                 default:
-                    if(tokenSintactico.Tipo == "ID")//a++;  a:=2;
+                    if (tokenSintactico.Tipo == "ID")//a++;  a:=2;
                     {
                         temp = asignar();
-                        if(lineaError == 0)
+                        if (lineaError == 0)
                             match_nuevo(";");
                     }
                     //else if(tokenSintactico.lexema != "else" && tokenSintactico.lexema != "end" && tokenSintactico.lexema != "until" && tokenSintactico.lexema != "}")
                     //{
-                        //erroresSintacticos += "Error de sintaxis, token inesperado:" + tokenSintactico.lexema + " en Linea: " + tokenSintactico.Fila + ", " + tokenSintactico.Columna + "\n";
+                    //erroresSintacticos += "Error de sintaxis, token inesperado:" + tokenSintactico.lexema + " en Linea: " + tokenSintactico.Fila + ", " + tokenSintactico.Columna + "\n";
                     //    lineaError = tokenSintactico.Fila;
-                        //nextToken();
-                        //error , token no valido en Linea: Col: 'Unexpected'
+                    //nextToken();
+                    //error , token no valido en Linea: Col: 'Unexpected'
                     //}
                     else
                     {
@@ -1874,7 +1866,7 @@ namespace IDEBeta
                 match("(");
                 temp.Hijos.Add(exp());
                 match(")");
-                if(tokenSintactico.lexema == "{")
+                if (tokenSintactico.lexema == "{")
                 {
                     temp.Hijos.Add(bloque());
                 }
@@ -1913,7 +1905,10 @@ namespace IDEBeta
         public nodo ifPrueba()
         {
             nodo temp = new nodo();
+            //Agregando para el semantico
+            temp.tipoNodo = "statement";
             temp.Nombre = tokenSintactico.lexema;
+            temp.linea = tokenSintactico.Fila;
             match("if");
             temp.Hijos.Add(exp_then());
             match_nuevo("then");
@@ -1922,6 +1917,7 @@ namespace IDEBeta
             {
                 nodo else_ = new nodo();
                 else_.Nombre = tokenSintactico.lexema;
+                else_.linea = tokenSintactico.Fila;
                 nextToken();
                 //temp.Hijos[2] = secuencia_sent();
                 else_.Hijos.Add(secuencia_sent());
@@ -1991,6 +1987,7 @@ namespace IDEBeta
         {
             nodo temp = new nodo();
             temp.Nombre = tokenSintactico.lexema;
+            temp.linea = tokenSintactico.Fila;
             match("if");
             match("(");
             temp.Hijos.Add(exp());
@@ -2001,6 +1998,7 @@ namespace IDEBeta
             {
                 nodo else_ = new nodo();
                 else_.Nombre = tokenSintactico.lexema;
+                else_.linea = tokenSintactico.Fila;
                 nextToken();
                 //temp.Hijos[2] = secuencia_sent();
                 else_.Hijos.Add(secuencia_sent());
@@ -2020,7 +2018,7 @@ namespace IDEBeta
                     nextToken();
                     //temp.Hijos[1] = secuencia_sent();
                     temp.Hijos.Add(secuencia_sent());
-                    if(tokenSintactico.lexema == "else")
+                    if (tokenSintactico.lexema == "else")
                     {
                         nodo else_ = new nodo();
                         else_.Nombre = tokenSintactico.lexema;
@@ -2054,17 +2052,21 @@ namespace IDEBeta
         public nodo repeat()
         {
             nodo temp = new nodo();
+            //Agregando para semantico
+            temp.tipo = "statement";
             temp.Nombre = tokenSintactico.lexema;
+            temp.linea = tokenSintactico.Fila;
             if (tokenSintactico.lexema == "do")
             {
                 nextToken();
                 //temp.Hijos[0] = secuencia_sent();
                 temp.Hijos.Add(secuencia_sent());
                 //nextToken();
-                if(tokenSintactico.lexema == "until")
+                if (tokenSintactico.lexema == "until")
                 {
                     nodo until = new nodo();
                     until.Nombre = tokenSintactico.lexema;
+                    until.linea = tokenSintactico.Fila;
                     nextToken();
                     //temp.Hijos[1] = exp();
                     until.Hijos.Add(exp());
@@ -2086,9 +2088,13 @@ namespace IDEBeta
         {
             nodo nuevo = new nodo();
             nodo temp = new nodo();
-            if(tokenSintactico.Tipo == "ID")
+            if (tokenSintactico.Tipo == "ID")
             {
                 temp.Nombre = tokenSintactico.lexema;
+                //PROBANDO
+                temp.Tipo = "ID";
+                //FIN PROBANDO
+                temp.linea = tokenSintactico.Fila;
                 nextToken();
                 if (tokenSintactico.lexema == "++" || tokenSintactico.lexema == "--")
                 {
@@ -2097,6 +2103,7 @@ namespace IDEBeta
                         case "++":
                             nuevo = new nodo();
                             nuevo.Nombre = ":=";
+                            nuevo.linea = tokenSintactico.Fila;
                             nuevo.Hijos.Add(temp);
                             nodo suma = new nodo();
                             suma.Nombre = "+";
@@ -2112,6 +2119,7 @@ namespace IDEBeta
                         case "--":
                             nuevo = new nodo();
                             nuevo.Nombre = ":=";
+                            nuevo.linea = tokenSintactico.Fila;
                             nuevo.Hijos.Add(temp);
                             suma = new nodo();
                             suma.Nombre = "-";
@@ -2126,23 +2134,25 @@ namespace IDEBeta
                             break;
                     }
                 }
-                else if(tokenSintactico.lexema == ":=")
-                    {
-                        nuevo.Nombre = tokenSintactico.lexema;
-                        match_nuevo(":=");
-                        nuevo.Hijos.Add(temp);
-                        //nuevo.Hijos[0] = exp();
-                        nuevo.Hijos.Add(exp());
-                    }
-                    else
-                    {
-                        //match_nuevo(":=");
-                        lineaError = tokenSintactico.Fila;
-                        erroresSintacticos += "Error de sintaxis, token desconocido " + tokenSintactico.lexema + " en Linea: " + tokenSintactico.Fila + ", " + tokenSintactico.Columna + "\n";
-                    }
-                    //nuevo.Nombre = tokenSintactico.lexema;
-                    //nextToken();
-                    //nuevo = new nodo();
+                else if (tokenSintactico.lexema == ":=")
+                {
+                    nuevo.Nombre = tokenSintactico.lexema;
+                    nuevo.tipoNodo = "statement";
+                    nuevo.linea = tokenSintactico.Fila;
+                    match_nuevo(":=");
+                    nuevo.Hijos.Add(temp);
+                    //nuevo.Hijos[0] = exp();
+                    nuevo.Hijos.Add(exp());
+                }
+                else
+                {
+                    //match_nuevo(":=");
+                    lineaError = tokenSintactico.Fila;
+                    erroresSintacticos += "Error de sintaxis, token desconocido " + tokenSintactico.lexema + " en Linea: " + tokenSintactico.Fila + ", " + tokenSintactico.Columna + "\n";
+                }
+                //nuevo.Nombre = tokenSintactico.lexema;
+                //nextToken();
+                //nuevo = new nodo();
                 //Error
             }
             else
@@ -2156,14 +2166,20 @@ namespace IDEBeta
         public nodo cin()
         {
             nodo nuevo = new nodo();
-            while(tokenSintactico.lexema == "cin" && tokenSintactico.lexema != "EOF")
+            nuevo.tipoNodo = "statement";
+            nuevo.linea = tokenSintactico.Fila;
+            while (tokenSintactico.lexema == "cin" && tokenSintactico.lexema != "EOF")
             {
                 nuevo.Nombre = tokenSintactico.lexema.ToString();
                 nextToken();
-                if(tokenSintactico.Tipo == "ID")
+                if (tokenSintactico.Tipo == "ID")
                 {
                     nodo salida = new nodo();
                     salida.Nombre = tokenSintactico.lexema.ToString();
+                    //PROBANDO
+                    salida.Tipo = "ID";
+                    //FIN PROBANDO
+                    salida.linea = tokenSintactico.Fila;
                     nuevo.Atributo = tokenSintactico.lexema.ToString();
                     nuevo.Hijos.Add(salida);
                     nextToken();
@@ -2175,6 +2191,8 @@ namespace IDEBeta
         public nodo cout()
         {
             nodo nuevo = new nodo();
+            nuevo.tipoNodo = "statement";
+            nuevo.linea = tokenSintactico.Fila;
             while (tokenSintactico.lexema == "cout" && tokenSintactico.lexema != "EOF")
             {
                 nuevo.Nombre = tokenSintactico.lexema.ToString();
@@ -2194,6 +2212,8 @@ namespace IDEBeta
             {
                 nuevo = new nodo();
                 nuevo.Nombre = tokenSintactico.lexema.ToString();
+                nuevo.tipoNodo = "expresion";
+                nuevo.linea = tokenSintactico.Fila;
                 nextToken();
                 //nuevo.Hijos[0] = temp;
                 //nuevo.Hijos[0] = temp;
@@ -2212,13 +2232,15 @@ namespace IDEBeta
             nodo nuevo;
             nodo temp = new nodo();
             temp = term();
-            while(tokenSintactico.lexema == "+" || tokenSintactico.lexema == "-" && tokenSintactico.lexema != "EOF")
+            while (tokenSintactico.lexema == "+" || tokenSintactico.lexema == "-" && tokenSintactico.lexema != "EOF")
             {
                 switch (tokenSintactico.lexema)
                 {
                     case "+":
                         nuevo = new nodo();
                         nuevo.Nombre = tokenSintactico.lexema.ToString();
+                        nuevo.tipoNodo = "expresion";
+                        nuevo.linea = tokenSintactico.Fila;
                         nextToken();
                         //nuevo.Hijos[0] = temp;
                         //nuevo.Hijos[0] = temp;
@@ -2229,12 +2251,14 @@ namespace IDEBeta
                         //nuevo.Valor += nuevo.Hijos[1].Valor; 
                         nuevo.Valor += nuevo.Hijos.ElementAt(1).Valor;
                         temp = nuevo;
-                        
+
                         break;
 
                     case "-":
                         nuevo = new nodo();
                         nuevo.Nombre = tokenSintactico.lexema.ToString();
+                        nuevo.tipoNodo = "expresion";
+                        nuevo.linea = tokenSintactico.Fila;
                         nextToken();
                         //nuevo.Hijos[0] = temp;
                         nuevo.Hijos.Add(temp);
@@ -2259,13 +2283,15 @@ namespace IDEBeta
         {
             nodo nuevo = new nodo();
             nodo temp = factor();
-            while(tokenSintactico.lexema == "*" || tokenSintactico.lexema == "/" || tokenSintactico.lexema == "%" && tokenSintactico.lexema != "EOF")
+            while (tokenSintactico.lexema == "*" || tokenSintactico.lexema == "/" || tokenSintactico.lexema == "%" && tokenSintactico.lexema != "EOF")
             {
                 switch (tokenSintactico.lexema)
                 {
                     case "*":
                         nuevo = new nodo();
                         nuevo.Nombre = tokenSintactico.lexema.ToString();
+                        nuevo.tipoNodo = "expresion";
+                        nuevo.linea = tokenSintactico.Fila;
                         nextToken();
                         //nuevo.Hijos[0] = temp;
                         nuevo.Hijos.Add(temp);
@@ -2280,6 +2306,8 @@ namespace IDEBeta
                     case "/":
                         nuevo = new nodo();
                         nuevo.Nombre = tokenSintactico.lexema.ToString();
+                        nuevo.tipoNodo = "expresion";
+                        nuevo.linea = tokenSintactico.Fila;
                         nextToken();
                         //nuevo.Hijos[0] = temp;
                         nuevo.Hijos.Add(temp);
@@ -2294,6 +2322,8 @@ namespace IDEBeta
                     case "%":
                         nuevo = new nodo();
                         nuevo.Nombre = tokenSintactico.lexema.ToString();
+                        nuevo.tipoNodo = "expresion";
+                        nuevo.linea = tokenSintactico.Fila;
                         nextToken();
                         //nuevo.Hijos[0] = temp;
                         nuevo.Hijos.Add(temp);
@@ -2318,13 +2348,15 @@ namespace IDEBeta
         {
             nodo nuevo = new nodo();
             nodo temp = fin();
-            while(tokenSintactico.lexema == "^" && tokenSintactico.lexema != "EOF")
+            while (tokenSintactico.lexema == "^" && tokenSintactico.lexema != "EOF")
             {
-                switch(tokenSintactico.lexema)
+                switch (tokenSintactico.lexema)
                 {
-                    case"^":
+                    case "^":
                         nuevo = new nodo();
                         nuevo.Nombre = tokenSintactico.lexema.ToString();
+                        nuevo.tipoNodo = "expresion";
+                        nuevo.linea = tokenSintactico.Fila;
                         nextToken();
                         //nuevo.Hijos[0] = temp;
                         nuevo.Hijos.Add(temp);
@@ -2345,7 +2377,7 @@ namespace IDEBeta
         public nodo fin()
         {
             nodo temp = new nodo();
-            if(tokenSintactico.lexema == "(")
+            if (tokenSintactico.lexema == "(")
             {
                 //nextToken();
                 match("(");
@@ -2355,20 +2387,30 @@ namespace IDEBeta
                 match(")");
                 //nextToken();
             }
-            else if(tokenSintactico.Tipo == "ID")
+            else if (tokenSintactico.Tipo == "ID")
             {
                 temp.Tipo = "ID";
                 temp.Nombre = tokenSintactico.lexema.ToString();
+                temp.tipoNodo = "expresion";
+                temp.linea = tokenSintactico.Fila;
                 nextToken();
             }
-            else if(tokenSintactico.Tipo == "Entero" || tokenSintactico.Tipo == "Flotante")
+            else if (tokenSintactico.Tipo == "Entero" || tokenSintactico.Tipo == "Flotante")
             {
                 int x = 0;
 
                 //Int32.TryParse(tokenSintactico.lexema, out x);
                 temp.Tipo = "factor";
+                temp.tipoNodo = "expresion";
                 temp.Nombre = tokenSintactico.lexema.ToString();
                 temp.Valor = Convert.ToDouble(tokenSintactico.lexema);
+                temp.linea = tokenSintactico.Fila;
+                //Agregar tipo INT o FLOAT
+                if (tokenSintactico.Tipo == "Entero")
+                    temp.tipoVariable = "int";
+                else
+                    temp.tipoVariable = "float";
+
                 nextToken();
             }
             else
@@ -2387,6 +2429,528 @@ namespace IDEBeta
         private void richTextBox2_TextChanged_1(object sender, EventArgs e)
         {
             //Errores Sintacticos
+        }
+
+        private void treeView2_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// Parte Semantica
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public nodo raizSemantica;
+        private void toolStripMenuItem7_Click(object sender, EventArgs e)
+        {
+            //Limpiamos variables antes de la siguiente ejecucion
+            hashTable = new Dictionary<string, HashTableItem>();
+            erroresSemanticos = "";
+            richTextBox3.Text = null;
+            //Console.WriteLine(resultado + "\n");
+            ArbolSemantico.Nodes.Clear();
+            ArbolSemantico.BeginUpdate();
+            //Creacion de la HashTable
+
+            //PROBANDO COSAS
+            /*for (int i = 0; i < raizSemantica.hijos.ElementAt(0).hijos.Count(); i++)
+                create_hashTable(raizSemantica.hijos.ElementAt(0).hijos.ElementAt(i));*/
+            recorrido(raizSemantica);
+            
+            var t = verArbolSemantico(raizSemantica, ArbolSemantico);
+            if (t != null)
+                ArbolSemantico.Nodes.Add(t);
+            ArbolSemantico.EndUpdate();
+            ArbolSemantico.ExpandAll();
+            richTextBox3.Text = erroresSemanticos;
+            posicionToken = 0;
+
+            printHashTable();
+            //Recorrer resto del arbol
+        }
+
+        public string erroresSemanticos;
+
+        Dictionary<string, HashTableItem> hashTable = new Dictionary<string, HashTableItem>();
+
+        public int location = 0;
+
+        public double resultadoPruebaOperaciion = 0;
+
+        public void recorrido(nodo arbol)
+        {
+            switch(arbol.nombre)
+            {
+                case "declaracion":
+                    foreach(var rama in arbol.hijos)
+                        create_hashTable(rama);
+                    break;
+                case ":=":
+                    if(lookUp(arbol.hijos.ElementAt(0).nombre))//Ignora asignaciones a variables no declaradas
+                    {
+                        //Actualizar sus valores
+                        arbol.hijos.ElementAt(0).tipoVariable = hashTable[arbol.hijos.ElementAt(0).nombre].tipoVariable;
+                        arbol.hijos.ElementAt(0).valor = hashTable[arbol.hijos.ElementAt(0).nombre].valorActual;
+                        
+                        var resultadoPruebaOperaciion = calculos(arbol.hijos.ElementAt(1));
+                        //Checar tipo de ambos hijos
+                        string resultado = checkNode(arbol.hijos.ElementAt(0), arbol.hijos.ElementAt(1));
+                        string actual = arbol.hijos.ElementAt(0).tipoVariable;
+                        if (actual == resultado)
+                        {
+                            arbol.hijos.ElementAt(0).valor = resultadoPruebaOperaciion;
+                            //Agregando el valor obtenido a las asignaciones
+                            arbol.valor = resultadoPruebaOperaciion;
+                            arbol.tipoVariable = resultado;
+                            actualizarHashTable(arbol.hijos.ElementAt(0));
+                        }
+                        else
+                        {
+                            //ERROR
+                            erroresSemanticos += "El tipo de la variable " + arbol.hijos[0].nombre + 
+                                " no corresponde al valor asignado, en linea " + arbol.hijos.ElementAt(0).linea + "\n";
+                        }
+                    }
+                    else
+                    {
+                        erroresSemanticos += "La variable " + arbol.hijos[0].nombre + " en la linea " + arbol.linea + " no ha sido declarada\n";
+                    }
+                    break;
+                case "cin":
+                    insert_node(arbol.hijos.ElementAt(0));
+                    break;
+                case "cout":
+                    arbol.valor = calculos(arbol.hijos.ElementAt(0));
+                    break;
+                case "if":
+                case "until":
+                case "while":
+                    expressionCheck(arbol.hijos.ElementAt(0));
+                    break;
+            }
+            if(arbol.hijos.Count() > 0)
+            {
+                foreach(var rama in arbol.hijos)
+                {
+                    recorrido(rama);
+                }
+            }
+
+        }
+
+        public void expressionCheck(nodo t)
+        {
+            nodo b = new nodo();
+            nodo a = new nodo();
+            a.valor = calculos(t.hijos.ElementAt(0));
+            b.valor = calculos(t.hijos.ElementAt(1));
+            t.tipoVariable = "booleano";
+            switch (t.nombre)
+            {
+                case "==":
+                    if(a.valor == b.valor)
+                        t.valor = 1;
+                    else
+                        t.valor = 0;
+                    break;
+                case "!=":
+                    if (a.valor != b.valor)
+                        t.valor = 1;
+                    else
+                        t.valor = 0;
+                    break;
+                case "<=":
+                    if (a.valor <= b.valor)
+                        t.valor = 1;
+                    else
+                        t.valor = 0;
+                    break;
+                case ">=":
+                    if (a.valor >= b.valor)
+                        t.valor = 1;
+                    else
+                        t.valor = 0;
+                    break;
+                case ">":
+                    if (a.valor > b.valor)
+                        t.valor = 1;
+                    else
+                        t.valor = 0;
+                    break;
+                case "<":
+                    if (a.valor < b.valor)
+                        t.valor = 1;
+                    else
+                        t.valor = 0;
+                    break;
+            }
+        }
+
+        public TreeNode verArbolSemantico(nodo arbol, TreeView tree)
+        {
+            if (arbol != null)
+            {
+                TreeNode nuevoT = new TreeNode();
+
+                //if (tree.Nodes.Count == 0)
+                //    tree.Nodes.Add(arbol.Nombre.ToString());
+                //else
+                //    tree.Nodes[0].Nodes.Add(arbol.Nombre.ToString());
+                //Probando cosas
+                if (arbol.Nombre == null)
+                {
+                    return null;
+                }
+                if (arbol.Tipo == "factor" || arbol.Tipo == "ID")
+                {
+                    string x = arbol.Valor.ToString();
+                    //nuevoT.Nodes.Add("Nuevo");
+                    if (arbol.Tipo == "ID")
+                    {
+                        switch(arbol.tipoVariable)
+                        {
+                            case "int":
+                                nuevoT.Text = arbol.Nombre.ToString() + ".Tipo: " + arbol.tipoVariable + " (" + arbol.valor.ToString("N0") + ")";
+                                break;
+                            case "float":
+                                nuevoT.Text = arbol.Nombre.ToString() + ".Tipo: " + arbol.tipoVariable + " (" + arbol.valor.ToString("F") + ")";
+                                break;
+                            default:
+                                nuevoT.Text = arbol.Nombre.ToString() + ".Tipo: SIN TIPO (" + arbol.valor.ToString("N0") + ")";
+                                break;
+                        }
+                        
+                        //insert_node(arbol);
+                    }
+                    else
+                    {
+                        nuevoT.Text = arbol.Nombre.ToString();
+                    }
+                    //nuevoT.Name = arbol.Nombre.ToString();
+                    //nuevoT.Nodes.Add(x.ToString());
+                    return nuevoT;
+                }
+                //PROBANDO
+                if(arbol.nombre == "+" || arbol.nombre == "-" || arbol.nombre == "*" 
+                    || arbol.nombre == "/" || arbol.nombre == "%" || arbol.nombre == "^" || arbol.nombre == ":=")
+                {
+                    switch(arbol.tipoVariable)
+                    {
+                        case "int":
+                            nuevoT.Text = arbol.Nombre.ToString() + " (" + arbol.Valor.ToString("N0") + ")";
+                            break;
+                        case "float":
+                            nuevoT.Text = arbol.Nombre.ToString() + " (" + arbol.Valor.ToString("F") + ")";
+                            break;
+                        default:
+                            nuevoT.Text = arbol.Nombre.ToString() + " (" + arbol.Valor.ToString() + ")";
+                            break;
+                    }
+                    
+                }
+                else if(arbol.nombre == ">" || arbol.nombre == "<" || arbol.nombre == ">=" 
+                    || arbol.nombre == "<=" || arbol.nombre == "==" || arbol.nombre == "!=")
+                {
+                    if(arbol.valor == 0)
+                        nuevoT.Text = arbol.Nombre.ToString() + "Tipo: Boolean (False)";
+                    else
+                        nuevoT.Text = arbol.Nombre.ToString() + "Tipo: Boolean (True)";
+                }
+                /*
+                else if(arbol.nombre == ":=")
+                {
+                    resultadoPruebaOperaciion = calculos(arbol.hijos.ElementAt(1));
+                    arbol.hijos.ElementAt(0).valor = resultadoPruebaOperaciion;
+                    actualizarHashTable(arbol.hijos.ElementAt(0));
+                    nuevoT.Text = arbol.nombre;
+                }*/
+                else
+                {
+                    nuevoT.Text = arbol.Nombre.ToString();
+                }
+
+                //nuevoT.Text = arbol.Nombre.ToString(); //+ ".Valor." + arbol.Valor.ToString();
+
+
+
+                //nuevoT.Name = arbol.Nombre.ToString();
+                //nuevoT.Nodes.Add(arbol.Nombre.ToString());
+                //nuevoT.Nodes[0].Nodes.Add(verArbol(arbol.Hijos[0], tree));
+                //nuevoT.Nodes[0].Nodes.Add(verArbol(arbol.Hijos[1], tree));
+                var hijos = arbol.Hijos.Count;
+                for (int i = 0; i < hijos; i++)
+                {
+                    if (arbol.Hijos[i] != null && arbol.Hijos[i].nombre != null)
+                        nuevoT.Nodes.Add(verArbolSemantico(arbol.Hijos[i], tree));
+                }
+                //if(arbol.Hijos[0] != null)
+                //    nuevoT.Nodes.Add(verArbol(arbol.Hijos[0], tree));
+                //if (arbol.Hijos[1] != null)
+                //    nuevoT.Nodes.Add(verArbol(arbol.Hijos[1], tree));
+                //treeView1.Nodes[0].Nodes;
+
+                //Console.WriteLine("Nodo -> " + arbol.Nombre + "\n");
+                //Console.WriteLine("Valor -> " + arbol.Valor + "\n");
+
+                //tree = verArbol(arbol.Hijos[0], tree);
+                //tree = verArbol(arbol.Hijos[1], tree);
+
+                return nuevoT;
+            }
+            return null;
+        }
+
+        public class HashTableItem
+        {
+            public string nombre { get; set; }
+            public List<int> lineas { get; set; }
+            public int localidad { get; set; }
+            public string tipoVariable { get; set; }
+            public double valorActual { get; set; }
+        }
+
+        public void create_hashTable(nodo t)
+        {
+            for (int i = 0; i < t.hijos.Count(); i++)
+            {
+                if (!lookUp(t.hijos.ElementAt(i).nombre))
+                {
+                    hashTable.Add(t.hijos.ElementAt(i).nombre, new HashTableItem
+                    {
+                        nombre = t.hijos.ElementAt(i).nombre,
+                        lineas = new List<int>(),
+                        localidad = location++,
+                        tipoVariable = t.hijos.ElementAt(i).tipoNodo,
+                        valorActual = 0
+                    });
+                    hashTable[t.hijos.ElementAt(i).nombre].lineas.Add(t.hijos.ElementAt(i).linea);
+                    //Propagacion de tipo en variables
+                    t.hijos.ElementAt(i).tipoNodo = t.tipoNodo;
+                }
+                else
+                {
+                    //Error, se declaro la misma variable dos veces
+                    erroresSemanticos += "Variable " + t.hijos.ElementAt(i).nombre + " duplicada en la linea " + t.hijos.ElementAt(i).linea + "\n";
+                }
+            }
+        }
+
+        public bool lookUp(string nombre)
+        {
+            if(hashTable.ContainsKey(nombre))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public void traverse(nodo t, string recorrido)
+        {
+            if (t != null)
+            {
+                try
+                {
+                    if (recorrido == "pre")
+                        //preProc(t);
+                    for (int i = 0; i < t.hijos.Count(); i++)
+                    {
+                        traverse(t.hijos.ElementAt(i),"pre");
+                    }
+                    //if (recorrido == "post")
+                        //postProc(t);
+
+                }
+                catch (Exception e) { }
+            }
+        }
+
+        public void insert_node(nodo t)
+        {
+            if(!lookUp(t.nombre))
+            {
+                //Error no esta declarada la variable
+                erroresSemanticos += "La variable " + t.nombre + " en la linea " + t.linea + " no ha sido declarada\n";
+            }
+            else
+            {
+                //Si se encuentra, agrega la linea donde la encontro
+                hashTable[t.nombre].lineas.Add(t.linea);
+                //Propagacion de tipo
+                t.tipoVariable = hashTable[t.nombre].tipoVariable;
+                t.Valor = hashTable[t.nombre].valorActual;
+            }
+            /*
+            if(t != null)
+            {
+                switch(t.tipoNodo)
+                {
+                    case "statement" :
+                        switch(t.nombre)
+                        {
+                            case ":=":
+                            case "cin":
+                                if(lookUp(t.nombre))
+                                {
+                                    //Se actualza la linea en la que aparecio
+                                }
+                                else
+                                {
+                                    //Error, encontramos una variable que no esta en la hashTable
+                                }
+                                break;
+                        }
+                        break;
+                }
+            }*/
+        }
+
+        public void printHashTable()
+        {
+            //Agregando el GRID VIEW
+            dataGridView1.Columns.Clear();
+            dataGridView1.Columns.Add("Nombre", "Nombre");
+            dataGridView1.Columns[0].Width = 60;
+            dataGridView1.Columns.Add("Location", "Location");
+            dataGridView1.Columns[1].Width = 60;
+            
+            dataGridView1.Columns.Add("Ultimo Valor", "Ultimo Valor");
+            dataGridView1.Columns[2].Width = 60;
+            dataGridView1.Columns.Add("Numero de ocurrencias", "Numero de ocurrencias");
+            dataGridView1.Columns[3].Width = 60;
+            dataGridView1.Columns.Add("Lineas", "Lineas");
+            dataGridView1.Columns[4].Width = 200;
+
+            Console.WriteLine("Nombre\tLocation\tUltimo Valor\tNumero de Veces\tLineas\n");
+            foreach(var item in hashTable)
+            {
+                string lineas = "";
+                Console.Write(item.Value.nombre + "\t" + item.Value.localidad + "\t");
+                Console.Write("\t " + item.Value.valorActual);
+                Console.Write("\t " + "(" + item.Value.lineas.Count() + ")\t");
+                foreach(var i in item.Value.lineas)
+                {
+                    Console.Write(i + " ");
+                    lineas += i + ",";
+                }
+                Console.Write("\n");
+
+                dataGridView1.Rows.Add(item.Value.nombre, item.Value.localidad.ToString(), item.Value.valorActual.ToString()
+                    , item.Value.lineas.Count().ToString(), lineas);
+            }
+
+            
+        }
+
+        public string checkNode(nodo a, nodo b)
+        {
+            if(a.tipoVariable == b.tipoVariable)
+            {
+                return a.tipoVariable;
+            }
+            else
+            {
+                return "float";
+            }
+        }
+
+        public double calculos(nodo raiz)
+        {
+            if(raiz.hijos.Count > 0)
+            {
+                switch(raiz.nombre)
+                {
+                    case "+":
+                        raiz.valor = calculos(raiz.hijos.ElementAt(0)) + calculos(raiz.hijos.ElementAt(1));
+                        //Propagacion de tipo en  operaciones
+                        raiz.tipoVariable = checkNode(raiz.hijos.ElementAt(0), raiz.hijos.ElementAt(1));
+                        if(raiz.tipoVariable == "int")
+                            raiz.Valor = Math.Truncate(raiz.Valor);
+                        break;
+                    case "-":
+                        raiz.valor = calculos(raiz.hijos.ElementAt(0)) - calculos(raiz.hijos.ElementAt(1));
+                        raiz.tipoVariable = checkNode(raiz.hijos.ElementAt(0), raiz.hijos.ElementAt(1));
+                        if (raiz.tipoVariable == "int")
+                            raiz.Valor = Math.Truncate(raiz.Valor);
+                        break;
+                    case "*":
+                        raiz.valor = calculos(raiz.hijos.ElementAt(0)) * calculos(raiz.hijos.ElementAt(1));
+                        raiz.tipoVariable = checkNode(raiz.hijos.ElementAt(0), raiz.hijos.ElementAt(1));
+                        if (raiz.tipoVariable == "int")
+                            raiz.Valor = Math.Truncate(raiz.Valor);
+                        break;
+                    case "/":
+                        raiz.valor = calculos(raiz.hijos.ElementAt(0)) / calculos(raiz.hijos.ElementAt(1));
+                        raiz.tipoVariable = checkNode(raiz.hijos.ElementAt(0), raiz.hijos.ElementAt(1));
+                        if (raiz.tipoVariable == "int")
+                            raiz.Valor = Math.Truncate(raiz.Valor);
+                        break;
+                    case "%":
+                        raiz.valor = calculos(raiz.hijos.ElementAt(0)) % calculos(raiz.hijos.ElementAt(1));
+                        raiz.tipoVariable = checkNode(raiz.hijos.ElementAt(0), raiz.hijos.ElementAt(1));
+                        if (raiz.tipoVariable == "int")
+                            raiz.Valor = Math.Truncate(raiz.Valor);
+                        break;
+                    case "^":
+                        raiz.valor = Math.Pow(calculos(raiz.hijos.ElementAt(0)),calculos(raiz.hijos.ElementAt(1)));
+                        raiz.tipoVariable = checkNode(raiz.hijos.ElementAt(0), raiz.hijos.ElementAt(1));
+                        if (raiz.tipoVariable == "int")
+                            raiz.Valor = Math.Truncate(raiz.Valor);
+                        break;
+                }
+                return raiz.valor;
+            }
+            else
+            {
+                if(raiz.Tipo == "ID")
+                {
+                    if (hashTable.ContainsKey(raiz.nombre))
+                    {
+                        insert_node(raiz);
+                        //Propagacion de tipo y valor actual
+                        raiz.tipoVariable = hashTable[raiz.nombre].tipoVariable;
+                        raiz.valor = hashTable[raiz.nombre].valorActual;
+                        return hashTable[raiz.nombre].valorActual;
+                    }
+                    else
+                        return 0; //Se uso variable que no se encuentra en la hashtable
+                }
+                else
+                {
+                    return raiz.valor;
+                }
+            }
+        }
+
+        public void actualizarHashTable(nodo t)
+        {
+            if(hashTable.ContainsKey(t.nombre))
+            {
+                hashTable[t.nombre].valorActual = t.valor;
+                hashTable[t.nombre].lineas.Add(t.linea);
+            }
+            else
+            {
+                erroresSemanticos += "La variable " + t.nombre + " en la linea " + t.linea + " no ha sido declarada\n";
+            }
+        }
+
+        private void richTextBox3_TextChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
         }
     }
 }
