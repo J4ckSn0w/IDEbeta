@@ -2936,6 +2936,7 @@ namespace IDEBeta
             {
                 hashTable[t.nombre].valorActual = t.valor;
                 hashTable[t.nombre].lineas.Add(t.linea);
+
             }
             else
             {
