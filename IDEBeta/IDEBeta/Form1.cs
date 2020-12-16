@@ -1767,6 +1767,8 @@ namespace IDEBeta
             nodo t = null;//secuencia();
             nodo p = t;
 
+            temp.tipoNodo = "statement";
+
             while (tokenSintactico.lexema != "end" && tokenSintactico.lexema != "else" && tokenSintactico.lexema != "until" && tokenSintactico.lexema != "EOF" && tokenSintactico.lexema != "}")
             {
                 nodo q = new nodo();
@@ -2054,6 +2056,9 @@ namespace IDEBeta
             nodo temp = new nodo();
             //Agregando para semantico
             temp.tipo = "statement";
+
+            temp.tipoNodo = "statement";
+
             temp.Nombre = tokenSintactico.lexema;
             temp.linea = tokenSintactico.Fila;
             if (tokenSintactico.lexema == "do")
@@ -2950,6 +2955,311 @@ namespace IDEBeta
         }
 
         private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+        /// <summary>
+        /// CODIGO INTERMEDIO
+        /// </summary>
+        public string codigoIntermedioTexto = "";
+        private void toolStripMenuItem2_Click(object sender, EventArgs e)
+        {
+            codigoIntermedioTexto = "";
+            if(!string.IsNullOrEmpty(erroresSemanticos) || !string.IsNullOrEmpty(erroresSintacticos))
+            {
+                MessageBox.Show("No puede compilar hasta arreglar los errores.");
+            }
+            else
+            {
+                emitLoc = 0;
+                highEmitLoc = 0;
+                codigoIntermedio(raizSemantica.hijos[1]);
+            }
+            richTextBox6.Text = codigoIntermedioTexto;
+            guardarIntermedio(codigoIntermedioTexto);
+        }
+        //DEFINE
+        public int mp = 6;
+        public int ac = 0;
+        public int ac1 = 1;
+        public int gp = 5;
+        public static int tmpOffset = 0;
+        public void codigoIntermedio(nodo tree)
+        {
+            emitRM("LD", mp, 0, ac, "Load max address");
+            emitRM("ST", ac, 0, ac, "Clear location 0");
+            foreach (var hijo in tree.hijos)
+            {
+                cGen(hijo);
+            }
+            emitRO("HALT", 0, 0, 0, "");
+        }
+
+        public int st_lookUp(string nombre)
+        {
+            if (hashTable.ContainsKey(nombre))
+            {
+                return hashTable[nombre].localidad;
+            }
+            else
+            {
+                return -1;
+            }
+        }
+
+        public void cGen(nodo tree)
+        {
+            if(tree != null)
+            {
+                switch(tree.tipoNodo)
+                {
+                    case "expresion":
+                        genExp(tree);
+                        break;
+                    case "statement":
+                        genStmt(tree);
+                        break;
+                }
+            }
+        }
+
+        public void genStmt(nodo tree)
+        {
+            int savedLoc1, savedLoc2, currentLoc;
+            int loc;
+            if(tree != null)
+            {
+                /*if(tree.hijos.Count > 0)
+                {*/
+                    switch (tree.nombre)
+                    {
+                        case ":=":
+                            cGen(tree.hijos[1]);
+                            loc = st_lookUp(tree.hijos[0].nombre);
+                            emitRM("ST", ac, loc, gp, "Asigna valor guardado");
+                            break;
+                        case "cin":
+                            emitRO("IN", ac, 0, 0, "Read integer value");
+                            loc = st_lookUp(tree.hijos[0].nombre);
+                            emitRM("ST", ac, loc, gp, "read: store value");
+                            break;
+                        case "cout":
+                            cGen(tree.hijos[0]);
+                            emitRO("OUT", ac, 0, 0, "Write ac");
+                            break;
+                        case "if":
+                            cGen(tree.hijos[0]);
+                            savedLoc1 = emitSkip(1);
+
+                            foreach(var hijo in tree.hijos[1].hijos)
+                            {
+                                cGen(hijo);
+                            }
+                            //cGen(tree.hijos[1].hijos[0]);
+
+                            savedLoc2 = emitSkip(1);
+                            currentLoc = emitSkip(0);
+                            emitBackup(savedLoc1);
+                            emitRM_Abs("JEQ", ac, currentLoc, "if: jmp to else");
+                            emitRestore();
+                            if(tree.hijos.Count > 2)
+                            {
+                                //cGen(tree.hijos[2].hijos[0].hijos[0]);
+
+                                foreach(var hijo in tree.hijos[2].hijos[0].hijos)
+                                {
+                                    cGen(hijo);
+                                }
+
+                                currentLoc = emitSkip(0);
+                                emitBackup(savedLoc2);
+                                emitRM_Abs("LDA", pc, currentLoc, "jmp to end");
+                                emitRestore();
+                            }
+                            break;
+                        case "do":
+                            savedLoc1 = emitSkip(0);
+                            foreach(var hijo in tree.hijos[0].hijos[0].hijos)
+                            {
+                                cGen(hijo);
+                            }
+                            //cGen(tree.hijos[0].hijos[0].hijos[0]);
+                            cGen(tree.hijos[1].hijos[0]);
+                            emitRM_Abs("JEQ", ac, savedLoc1, "repeat: jmp back to body");
+                            break;
+                        default:
+                            break;
+                    }
+                //}
+            }
+        }
+
+        public void genExp(nodo tree)
+        {
+            int loc;
+            switch(tree.tipo)
+            {
+                case "ID":
+                    loc = st_lookUp(tree.nombre);
+                    emitRM("LD", ac, loc, gp, "Load id value");
+                    break;
+                case "factor":
+                    emitRM("LDC", ac, (int)tree.Valor, 0, "load const");
+                    break;
+                default:
+                    if(tree.hijos.Count == 2)
+                    {
+                        cGen(tree.hijos[0]);
+                        emitRM("ST", ac, tmpOffset--, mp, "Op: push left");
+                        cGen(tree.hijos[1]);
+                        emitRM("LD", ac1, ++tmpOffset, mp, "Op: load left");
+                        switch(tree.nombre)
+                        {
+                            case "+":
+                                emitRO("ADD", ac, ac1, ac, "op +");
+                                break;
+                            case "-":
+                                emitRO("SUB", ac, ac1, ac, "op -");
+                                break;
+                            case "*":
+                                emitRO("MUL", ac, ac1, ac, "op *");
+                                break;
+                            case "/":
+                                emitRO("DIV", ac, ac1, ac, "op /");
+                                break;
+                            case "^":
+                                for (int i = 0; i < tree.hijos[1].valor;i++)
+                                {
+                                    cGen(tree.hijos[0]);
+                                    emitRM("ST", ac, tmpOffset--, mp, "Op: push left");
+                                    cGen(tree.hijos[1]);
+                                    emitRM("LD", ac1, ++tmpOffset, mp, "Op: load left");
+                                    emitRO("MUL", ac, ac1, ac, "op *");
+                                }
+                                break;
+                            case "<":
+                                emitRO("SUB", ac, ac1, ac, "op <");
+                                emitRM("JLT", ac, 2, pc, "br if true");
+                                emitRM("LDC", ac, 0, ac, "false case");
+                                emitRM("LDA", pc, 1, pc, "unconditional jmp");
+                                emitRM("LDC", ac, 1, ac, "true case");
+                                break;
+                            case "==":
+                                emitRO("SUB", ac, ac1, ac, "op ==");
+                                emitRM("JEQ", ac, 2, pc, "br if true");
+                                emitRM("LDC", ac, 0, ac, "false case");
+                                emitRM("LDA", pc, 1, pc, "unconditional jmp");
+                                emitRM("LDC", ac, 1, ac, "true case");
+                                break;
+                            case "<=":
+                                emitRO("SUB", ac, ac1, ac, "op ==");
+                                emitRM("JLE", ac, 2, pc, "br if true");
+                                emitRM("LDC", ac, 0, ac, "false case");
+                                emitRM("LDA", pc, 1, pc, "unconditional jmp");
+                                emitRM("LDC", ac, 1, ac, "true case");
+                                break;
+                            case ">=":
+                                emitRO("SUB", ac, ac1, ac, "op ==");
+                                emitRM("JGE", ac, 2, pc, "br if true");
+                                emitRM("LDC", ac, 0, ac, "false case");
+                                emitRM("LDA", pc, 1, pc, "unconditional jmp");
+                                emitRM("LDC", ac, 1, ac, "true case");
+                                break;
+                            case ">":
+                                emitRO("SUB", ac, ac1, ac, "op ==");
+                                emitRM("JGT", ac, 2, pc, "br if true");
+                                emitRM("LDC", ac, 0, ac, "false case");
+                                emitRM("LDA", pc, 1, pc, "unconditional jmp");
+                                emitRM("LDC", ac, 1, ac, "true case");
+                                break;
+                            case "!=":
+                                emitRO("SUB", ac, ac1, ac, "op ==");
+                                emitRM("JNE", ac, 2, pc, "br if true");
+                                emitRM("LDC", ac, 0, ac, "false case");
+                                emitRM("LDA", pc, 1, pc, "unconditional jmp");
+                                emitRM("LDC", ac, 1, ac, "true case");
+                                break;
+                        }
+                    }
+                    break;
+            }
+        }
+
+        void guardarIntermedio(string contenidoTerminado)
+        {
+            string fecha = DateTime.Now.ToString();
+            fecha = fecha.Replace("/", "-");
+            fecha = fecha.Replace(" ", "");
+            fecha = fecha.Replace(".", "");
+            fecha = fecha.Replace(":", "-");
+            using (var saveFile = new System.IO.StreamWriter("CodigoIntermedio-" + fecha + ".tm"))
+            {
+                saveFile.WriteLine(contenidoTerminado);
+                //MessageBox.Show("Despues de escribir el contenido");
+            }
+            using (var saveFile = new System.IO.StreamWriter("CodigoIntermedio.tm"))
+            {
+                saveFile.WriteLine(contenidoTerminado);
+                //MessageBox.Show("Despues de escribir el contenido");
+            }
+            //MessageBox.Show("Terminar Leer Archivos");
+        }
+
+        /// <summary>
+        /// Codigo de CODE
+        /// </summary>
+        public int emitLoc = 0;
+        public int highEmitLoc = 0;
+        public int pc = 7;
+        public void emitRO(string op, int r, int s, int t, string comentario)
+        {
+            codigoIntermedioTexto += emitLoc++.ToString()+":  " + op.ToString() + "  " + r.ToString() + "," + s.ToString() + "," + t.ToString() + "\n";
+            if (highEmitLoc < emitLoc)
+                highEmitLoc = emitLoc;
+        }
+
+        public void emitRM(string op, int r, int d, int s, string comentario)
+        {
+            codigoIntermedioTexto += emitLoc++.ToString() + ":  " + op.ToString() + "  " + r.ToString() + "," + d.ToString() + "(" + s.ToString() + ")" + "\n";
+            if (highEmitLoc < emitLoc)
+                highEmitLoc = emitLoc;
+        }
+
+        public int emitSkip(int howMany)
+        {
+            int i = emitLoc;
+            emitLoc += howMany;
+            if (highEmitLoc < emitLoc)
+                highEmitLoc = emitLoc;
+            return i;
+        }
+
+        public void emitBackup(int loc)
+        {
+            //if(loc > highEmitLoc)
+            emitLoc = loc;
+        }
+
+        public void emitRestore(/*void*/)
+        {
+            emitLoc = highEmitLoc;
+        }
+
+        public void emitRM_Abs(string op, int r, int a, string comentario)
+        {
+            codigoIntermedioTexto += emitLoc.ToString() + ":  " + op + "  " + r.ToString() + "," + (a - (emitLoc + 1)).ToString() + "(" + pc.ToString() + ")" + "\n";
+            ++emitLoc;
+            if (highEmitLoc < emitLoc)
+                highEmitLoc = emitLoc;
+        }
+
+        private void tabPage6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void richTextBox6_TextChanged(object sender, EventArgs e)
         {
 
         }
