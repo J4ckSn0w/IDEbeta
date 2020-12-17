@@ -12,6 +12,7 @@ using System.Threading.Tasks;
 using System.Windows.Documents;
 using System.Windows.Forms;
 using Timer = System.Windows.Forms.Timer;
+using System.Diagnostics;
 
 namespace IDEBeta
 {
@@ -2978,6 +2979,14 @@ namespace IDEBeta
             }
             richTextBox6.Text = codigoIntermedioTexto;
             guardarIntermedio(codigoIntermedioTexto);
+
+            //Abrir Tiny desde consola
+            //Process cmd = new Process();
+            Process p = new Process();
+            ProcessStartInfo psi = new ProcessStartInfo("C:\\Users\\masva\\Documents\\Compilador\\CodigosUltimaRevision\\TMP.exe");
+            psi.Arguments = "C:\\Users\\masva\\source\\repos\\J4ckSn0w\\IDEbeta\\IDEBeta\\IDEBeta\\bin\\Debug\\CodigoIntermedio.tm";
+            p.StartInfo = psi;
+            p.Start();
         }
         //DEFINE
         public int mp = 6;
@@ -3129,14 +3138,10 @@ namespace IDEBeta
                                 emitRO("DIV", ac, ac1, ac, "op /");
                                 break;
                             case "^":
-                                for (int i = 0; i < tree.hijos[1].valor;i++)
-                                {
-                                    cGen(tree.hijos[0]);
-                                    emitRM("ST", ac, tmpOffset--, mp, "Op: push left");
-                                    cGen(tree.hijos[1]);
-                                    emitRM("LD", ac1, ++tmpOffset, mp, "Op: load left");
-                                    emitRO("MUL", ac, ac1, ac, "op *");
-                                }
+                                emitRO("POT", ac, ac1, ac, "op ^");
+                                break;
+                            case "%":
+                                emitRO("MOD", ac, ac1, ac, "op %");
                                 break;
                             case "<":
                                 emitRO("SUB", ac, ac1, ac, "op <");
